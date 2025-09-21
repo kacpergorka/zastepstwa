@@ -12,10 +12,10 @@
 
 # Standardowe biblioteki
 import asyncio
+from collections import defaultdict
 import contextlib
 import json
 import os
-from collections import defaultdict
 from pathlib import Path
 
 # Wewnętrzne importy

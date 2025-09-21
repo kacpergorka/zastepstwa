@@ -12,13 +12,13 @@
 
 # Standardowe biblioteki
 import asyncio
+from collections import defaultdict
 import copy
+from datetime import datetime
 import difflib
 import hashlib
 import re
 import unicodedata
-from collections import defaultdict
-from datetime import datetime
 
 # Wewnętrzne importy
 from handlers.configuration import (
