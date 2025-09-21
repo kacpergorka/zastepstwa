@@ -13,10 +13,10 @@
 # Standardowe biblioteki
 import asyncio
 import contextlib
+from datetime import datetime
 import os
 import signal
 import sys
-from datetime import datetime
 
 # Zewnętrzne biblioteki
 import aiohttp
@@ -42,10 +42,8 @@ from handlers.configuration import (
 from handlers.data import zarządzajPlikiemDanych
 from handlers.logging import logiKonsoli
 from handlers.notifications import wyślijAktualizacje
-from handlers.parser import (
-	pobierzZawartośćStrony,
-	wyodrębnijDane
-)
+from handlers.parser import wyodrębnijDane
+from handlers.scraper import pobierzZawartośćStrony
 from helpers.helpers import (
 	normalizujTekst,
 	obliczSumęKontrolną,
