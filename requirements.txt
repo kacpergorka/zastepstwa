@@ -1,4 +1,4 @@
-aiohttp
-beautifulsoup4
-discord.py
-pytz
+aiohttp>=3.12.15
+beautifulsoup4>=4.13.5
+discord.py>=2.6.3
+pytz>=2025.2
