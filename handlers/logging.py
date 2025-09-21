@@ -19,7 +19,7 @@ from pathlib import Path
 import discord
 
 # Wewnętrzne importy
-from classes.timezone import FormatStrefyCzasowej
+from classes.timezone import Timezone
 
 # Konfiguruje globalne logowanie
 def skonfigurujLogi():
@@ -36,9 +36,9 @@ def skonfigurujLogi():
 		filename=ścieżkaLogów,
 		encoding="utf-8",
 		maxBytes=32 * 1024 * 1024,
-		backupCount=30
+		backupCount=31
 	)
-	formatter = FormatStrefyCzasowej("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+	formatter = Timezone("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 	obsługaLogów.setFormatter(formatter)
 
 	logiKonsoli.addHandler(obsługaLogów)
