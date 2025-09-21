@@ -17,6 +17,7 @@ import contextlib
 import discord
 
 # Wewnętrzne importy
+from classes.constants import Constants
 from handlers.configuration import (
 	blokadaKonfiguracji,
 	konfiguracja
@@ -50,9 +51,9 @@ def ustaw(bot: discord.Client):
 				embed = discord.Embed(
 					title="**Statystyki zastępstw**",
 					description="Dla tego serwera od rozpoczęcia roku szkolnego nie odnotowano jeszcze żadnych zastępstw.",
-					color=discord.Color(0xca4449)
+					color=Constants.KOLOR
 				)
-				embed.set_footer(text="Projekt licencjonowany na podstawie licencji MIT. Stworzone z ❤️ przez Kacpra Górkę!")
+				embed.set_footer(text=Constants.DŁUŻSZA_STOPKA)
 				await interaction.response.send_message(embed=embed)
 				return
 
@@ -60,7 +61,7 @@ def ustaw(bot: discord.Client):
 				embed = discord.Embed(
 					title="**Statystyki zastępstw**",
 					description=f"Dla tego serwera od rozpoczęcia roku szkolnego dostarczono **{licznik}** {odmieńZastępstwa(licznik)}! Poniżej znajduje się lista nauczycieli z największą liczbą zarejestrowanych zastępstw.",
-					color=discord.Color(0xca4449)
+					color=Constants.KOLOR
 				)
 
 				if isinstance(statystyki, dict) and statystyki:
@@ -69,14 +70,14 @@ def ustaw(bot: discord.Client):
 					if wolneMiejsca > 0:
 						for nauczyciel, liczba in sortowanie[:wolneMiejsca]:
 							embed.add_field(name=str(nauczyciel), value=f"Liczba zastępstw: {int(liczba)}", inline=True)
-				embed.set_footer(text="Projekt licencjonowany na podstawie licencji MIT. Stworzone z ❤️ przez Kacpra Górkę!")
+				embed.set_footer(text=Constants.DŁUŻSZA_STOPKA)
 				await interaction.response.send_message(embed=embed)
 
 			elif (wybraneKlasy and wybraniNauczyciele) or (wybraniNauczyciele and not wybraneKlasy):
 				embed = discord.Embed(
 					title="**Statystyki zastępstw**",
 					description=f"Dla tego serwera od rozpoczęcia roku szkolnego dostarczono **{licznik}** {odmieńZastępstwa(licznik)}! Poniżej znajduje się lista nauczycieli z największą liczbą zarejestrowanych zastępstw. (Pominięto nauczycieli ustawionych w filtrze).",
-					color=discord.Color(0xca4449)
+					color=Constants.KOLOR
 				)
 
 				wykluczeni = set()
@@ -96,24 +97,24 @@ def ustaw(bot: discord.Client):
 							embed.add_field(name=str(nauczyciel), value=f"Liczba zastępstw: {int(liczba)}", inline=True)
 				else:
 					embed.add_field(name="Brak danych", value="Nie znaleziono odpowiednich statystyk dla tego serwera.", inline=False)
-				embed.set_footer(text="Projekt licencjonowany na podstawie licencji MIT. Stworzone z ❤️ przez Kacpra Górkę!")
+				embed.set_footer(text=Constants.DŁUŻSZA_STOPKA)
 				await interaction.response.send_message(embed=embed)
 
 			else:
 				if not wybraneKlasy and not wybraniNauczyciele:
 					embed = discord.Embed(
 						title="**Polecenie nie zostało wykonane!**",
-						description=f"Aby wykonać to polecenie, poproś administratora o skonfigurowanie zastępstw. Jesteś administratorem? Użyj polecenia `/skonfiguruj` i postępuj zgodnie z instrukcjami.",
-						color=discord.Color(0xca4449)
+						description="Aby wykonać to polecenie, poproś administratora o skonfigurowanie zastępstw. Jesteś administratorem? Użyj polecenia `/skonfiguruj` i postępuj zgodnie z instrukcjami.",
+						color=Constants.KOLOR
 					)
-					embed.set_footer(text="Stworzone z ❤️ przez Kacpra Górkę!")
+					embed.set_footer(text=Constants.KRÓTSZA_STOPKA)
 					await interaction.response.send_message(embed=embed, ephemeral=True)
 					logujPolecenia(interaction, success=False, error_message="Zastępstwa nie zostały skonfigurowane.")
 					return
 			logujPolecenia(interaction, success=True)
 		except Exception as e:
 			logujPolecenia(interaction, success=False, error_message=str(e))
-			logiKonsoli.exception(f"Wystąpił błąd podczas wywołania polecenia /statystyki: {e}")
+			logiKonsoli.exception(f"Wystąpił błąd podczas wywołania polecenia „/statystyki”: {e}")
 			with contextlib.suppress(Exception):
 				if interaction.response.is_done():
 					await interaction.followup.send("Wystąpił błąd podczas wyświetlania statystyk. Spróbuj ponownie lub skontaktuj się z administratorem bota.", ephemeral=True)

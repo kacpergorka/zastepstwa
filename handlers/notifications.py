@@ -17,6 +17,7 @@ import asyncio
 import discord
 
 # Wewnętrzne importy
+from classes.constants import Constants
 from handlers.logging import logiKonsoli
 from helpers.helpers import (
 	ograniczReagowanie,
@@ -28,15 +29,16 @@ from helpers.helpers import (
 async def wyślijAktualizacje(kanał, identyfikatorSerwera, informacjeDodatkowe, aktualneWpisyZastępstw, aktualnyCzas):
 	opisTylkoDlaInformacjiDodatkowych = f"**Informacje dodatkowe zastępstw:**\n{informacjeDodatkowe}\n\n**Informacja o tej wiadomości:**\nTa wiadomość zawiera informacje dodatkowe umieszczone nad zastępstwami. Nie znaleziono dla Ciebie żadnych zastępstw pasujących do Twoich filtrów."
 	opisDlaInformacjiDodatkowych = f"**Informacje dodatkowe zastępstw:**\n{informacjeDodatkowe}\n\n**Informacja o tej wiadomości:**\nTa wiadomość zawiera informacje dodatkowe umieszczone nad zastępstwami. Wszystkie zastępstwa znajdują się pod tą wiadomością."
+	treśćStopkiInformacjiDodakowych = f"Czas aktualizacji: {aktualnyCzas}\n{Constants.KRÓTSZA_STOPKA}"
 	try:
 		ostatniaWiadomość = None
 		if informacjeDodatkowe and not aktualneWpisyZastępstw:
 			embed = discord.Embed(
 				title="**Zastępstwa zostały zaktualizowane!**",
 				description=opisTylkoDlaInformacjiDodatkowych,
-				color=discord.Color(0xca4449)
+				color=Constants.KOLOR
 			)
-			embed.set_footer(text=f"Czas aktualizacji: {aktualnyCzas}\nStworzone z ❤️ przez Kacpra Górkę!")
+			embed.set_footer(text=treśćStopkiInformacjiDodakowych)
 			await ograniczWysyłanie(kanał, embed=embed)
 
 		elif (informacjeDodatkowe and aktualneWpisyZastępstw) or (aktualneWpisyZastępstw):
@@ -53,9 +55,9 @@ async def wyślijAktualizacje(kanał, identyfikatorSerwera, informacjeDodatkowe,
 			embed = discord.Embed(
 				title="**Zastępstwa zostały zaktualizowane!**",
 				description=opisDlaInformacjiDodatkowych,
-				color=discord.Color(0xca4449)
+				color=Constants.KOLOR
 			)
-			embed.set_footer(text=f"Czas aktualizacji: {aktualnyCzas}\nStworzone z ❤️ przez Kacpra Górkę!")
+			embed.set_footer(text=treśćStopkiInformacjiDodakowych)
 			await ograniczWysyłanie(kanał, embed=embed)
 
 			for tytuł, wpisyZastępstw in aktualneWpisyZastępstw:
@@ -66,7 +68,7 @@ async def wyślijAktualizacje(kanał, identyfikatorSerwera, informacjeDodatkowe,
 				embed = discord.Embed(
 					title=f"**{tytuł}**",
 					description=tekstZastępstw,
-					color=discord.Color(0xca4449)
+					color=Constants.KOLOR
 				)
 				if not "Zastępstwa bez dołączonych klas!" in tytuł:
 					embed.set_footer(text="Każdy nauczyciel, którego dotyczą zastępstwa pasujące do Twoich filtrów, zostanie załączany w oddzielnej wiadomości.")
@@ -77,6 +79,6 @@ async def wyślijAktualizacje(kanał, identyfikatorSerwera, informacjeDodatkowe,
 		if ostatniaWiadomość and not "Zastępstwa bez dołączonych klas!" in tytuł:
 			await ograniczReagowanie(ostatniaWiadomość, "❤️")
 	except discord.DiscordException as e:
-		logiKonsoli.exception(f"Wystąpił błąd podczas wysyłania wiadomości dla serwera o ID {identyfikatorSerwera}. Więcej informacji: {e}")
+		logiKonsoli.exception(f"Wystąpił błąd podczas wysyłania wiadomości do serwera o ID {identyfikatorSerwera}. Więcej informacji: {e}")
 	except Exception as e:
-		logiKonsoli.exception(f"Wystąpił nieoczekiwany błąd podczas wysyłania wiadomości dla serwera o ID {identyfikatorSerwera}. Więcej informacji: {e}")
+		logiKonsoli.exception(f"Wystąpił nieoczekiwany błąd podczas wysyłania wiadomości do serwera o ID {identyfikatorSerwera}. Więcej informacji: {e}")

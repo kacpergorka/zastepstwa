@@ -11,14 +11,21 @@
 #
 
 # Standardowe biblioteki
-import asyncio, contextlib, os, signal, sys
+import asyncio
+import contextlib
+import os
+import signal
+import sys
 from datetime import datetime
 
 # Zewnętrzne biblioteki
-import aiohttp, discord, pytz
+import aiohttp
+import discord
+import pytz
 
 # Wewnętrzne importy
 from assets.ascii import ascii
+from classes.constants import Constants
 from commands import (
 	informacje,
 	skonfiguruj,
@@ -106,7 +113,7 @@ class Zastępstwa(discord.Client):
 				self.koniecRoku = asyncio.create_task(sprawdźKoniecRoku())
 			else:
 				logiKonsoli.info("Zadanie sprawdzające zakończenie roku szkolnego jest już uruchomione. Próba ponownego jego uruchomienia została zatrzymana.")
-			logiKonsoli.info(f"Wszystkie zadania zostały poprawnie uruchomione. Enjoy!")
+			logiKonsoli.info("Wszystkie zadania zostały poprawnie uruchomione. Enjoy!")
 		except Exception as e:
 			logiKonsoli.exception(f"Wystąpił błąd podczas wywoływania funkcji on_ready. Więcej informacji: {e}")
 
@@ -231,7 +238,7 @@ async def sprawdźSerwery(identyfikatorSerwera, zawartośćStrony):
 				}
 				await zarządzajPlikiemDanych(identyfikatorSerwera, noweDane)
 			except discord.DiscordException as e:
-				logiKonsoli.exception(f"Nie udało się wysłać wszystkich wiadomości dla serwera o ID {identyfikatorSerwera}, suma kontrolna nie zostanie zaktualizowana. Więcej informacji: {e}")
+				logiKonsoli.exception(f"Nie udało się wysłać wszystkich wiadomości do serwera o ID {identyfikatorSerwera}, suma kontrolna nie zostanie zaktualizowana. Więcej informacji: {e}")
 		else:
 			logiKonsoli.debug(f"Treść nie uległa zmianie dla serwera o ID {identyfikatorSerwera}. Brak nowych aktualizacji.")
 	except Exception as e:
@@ -296,21 +303,26 @@ async def sprawdźKoniecRoku():
 
 						wybraniNauczyciele = konfiguracjaSerwera.get("wybrani-nauczyciele", [])
 						wybraneKlasy = konfiguracjaSerwera.get("wybrane-klasy", [])
-						if wybraneKlasy and not wybraniNauczyciele:
-							if kanał.permissions_for(kanał.guild.me).mention_everyone:
-								wzmianka = await ograniczWysyłanie(kanał, "@everyone Podsumowanie roku szkolnego!", allowed_mentions=discord.AllowedMentions(everyone=True))
-								await asyncio.sleep(5)
-								try:
-									await ograniczUsuwanie(wzmianka)
-								except Exception:
-									pass
-							else:
-								logiKonsoli.warning(f"Brak uprawnień do używania @everyone dla serwera o ID {identyfikatorSerwera}. Wzmianka została pominięta.")
 
+						tytuł = "**Podsumowanie roku szkolnego!**"
+						opis = f"Dla tego serwera w tym roku szkolnym dostarczono **{licznik}** {odmieńZastępstwa(licznik)}! Poniżej znajduje się lista nauczycieli z największą liczbą zarejestrowanych zastępstw."
+						stopka = f"Udanych i przede wszystkim bezpiecznych wakacji!\n{Constants.KRÓTSZA_STOPKA}"
+
+						if kanał.permissions_for(kanał.guild.me).mention_everyone:
+							wzmianka = await ograniczWysyłanie(kanał, "@everyone Podsumowanie roku szkolnego!", allowed_mentions=discord.AllowedMentions(everyone=True))
+							await asyncio.sleep(5)
+							try:
+								await ograniczUsuwanie(wzmianka)
+							except Exception:
+								pass
+						else:
+							logiKonsoli.warning(f"Brak uprawnień do używania @everyone dla serwera o ID {identyfikatorSerwera}. Wzmianka została pominięta.")
+
+						if wybraneKlasy and not wybraniNauczyciele:
 							embed = discord.Embed(
-								title="**Podsumowanie roku szkolnego!**",
-								description=f"Dla tego serwera w tym roku szkolnym dostarczono **{licznik}** {odmieńZastępstwa(licznik)}! Poniżej znajduje się lista nauczycieli z największą liczbą zarejestrowanych zastępstw.",
-								color=discord.Color(0xca4449)
+								title=tytuł,
+								description=opis,
+								color=Constants.KOLOR
 							)
 
 							statystyki = dane.get("statystyki-nauczycieli", {}) or {}
@@ -320,24 +332,15 @@ async def sprawdźKoniecRoku():
 								if wolneMiejsca > 0:
 									for nauczyciel, liczba in sortowanie[:wolneMiejsca]:
 										embed.add_field(name=str(nauczyciel), value=f"Liczba zastępstw: {int(liczba)}", inline=True)
-							embed.set_footer(text="Udanych i bezpiecznych wakacji!\nProjekt licencjonowany na podstawie licencji MIT. Stworzone z ❤️ przez Kacpra Górkę!")
+							embed.set_footer(text=stopka)
 							await ograniczWysyłanie(kanał, embed=embed)
+							logiKonsoli.info(f"Roczne podsumowanie statystyk zastępstw zostało pomyślnie dostarczone do serwera o ID {identyfikatorSerwera}.")
 
 						elif (wybraneKlasy and wybraniNauczyciele) or (wybraniNauczyciele and not wybraneKlasy):
-							if kanał.permissions_for(kanał.guild.me).mention_everyone:
-								wzmianka = await ograniczWysyłanie(kanał, "@everyone Podsumowanie roku szkolnego!", allowed_mentions=discord.AllowedMentions(everyone=True))
-								await asyncio.sleep(5)
-								try:
-									await ograniczUsuwanie(wzmianka)
-								except Exception:
-									pass
-							else:
-								logiKonsoli.warning(f"Brak uprawnień do używania @everyone dla serwera {identyfikatorSerwera}. Wzmianka została pominięta.")
-
 							embed = discord.Embed(
-								title="**Podsumowanie roku szkolnego!**",
-								description=f"Dla tego serwera w tym roku szkolnym dostarczono **{licznik}** {odmieńZastępstwa(licznik)}! Poniżej znajduje się lista nauczycieli z największą liczbą zarejestrowanych zastępstw. (Pominięto nauczycieli ustawionych w filtrze).",
-								color=discord.Color(0xca4449)
+								title=tytuł,
+								description=(f"{opis} (Pominięto nauczycieli ustawionych w filtrze)."),
+								color=Constants.KOLOR
 							)
 
 							statystyki = dane.get("statystyki-nauczycieli", {}) or {}
@@ -358,8 +361,9 @@ async def sprawdźKoniecRoku():
 										embed.add_field(name=str(nauczyciel), value=f"Liczba zastępstw: {int(liczba)}", inline=True)
 							else:
 								embed.add_field(name="Brak danych", value="Nie znaleziono odpowiednich statystyk dla tego serwera.", inline=False)
-							embed.set_footer(text="Udanych i bezpiecznych wakacji!\nProjekt licencjonowany na podstawie licencji MIT. Stworzone z ❤️ przez Kacpra Górkę!")
+							embed.set_footer(text=stopka)
 							await ograniczWysyłanie(kanał, embed=embed)
+							logiKonsoli.info(f"Roczne podsumowanie statystyk zastępstw zostało pomyślnie dostarczone do serwera o ID {identyfikatorSerwera}.")
 
 						dane["ostatni-raport"] = dataZakończeniaRoku
 						dane["licznik-zastepstw"] = 0

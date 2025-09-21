@@ -15,6 +15,7 @@ import discord
 
 # Wewnętrzne importy
 from classes.commands import WidokGłówny
+from classes.constants import Constants
 from handlers.configuration import konfiguracja
 from handlers.logging import (
 	logiKonsoli,
@@ -32,9 +33,9 @@ def ustaw(bot: discord.Client):
 				embed = discord.Embed(
 					title="**Polecenie nie zostało wykonane!**",
 					description="Nie masz uprawnień do użycia tego polecenia. Może ono zostać użyte wyłącznie przez administratora serwera.",
-					color=discord.Color(0xca4449),
+					color=Constants.KOLOR
 				)
-				embed.set_footer(text="Stworzone z ❤️ przez Kacpra Górkę!")
+				embed.set_footer(text=Constants.KRÓTSZA_STOPKA)
 				await interaction.response.send_message(embed=embed, ephemeral=True)
 				logujPolecenia(interaction, success=False, error_message="Brak uprawnień.")
 				return
@@ -42,15 +43,21 @@ def ustaw(bot: discord.Client):
 			view = WidokGłówny(identyfikatorKanału=str(kanał.id), szkoła=szkoła)
 			embed = discord.Embed(
 				title="**Skonfiguruj filtrowanie zastępstw**",
-				description=("**Jesteś uczniem?**\nAby dostawać powiadomienia z nowymi zastępstwami przypisanymi Twojej klasie, naciśnij przycisk **Uczeń**.\n\n**Jesteś nauczycielem?**\nAby dostawać powiadomienia z nowymi zastępstwami przypisanymi Tobie, naciśnij przycisk **Nauczyciel**.\n\nAby wyczyścić wszystkie ustawione filtry, naciśnij przycisk **Wyczyść filtry**."),
-				color=discord.Color(0xca4449),
+				description=(
+					"**Jesteś uczniem?**"
+					+ "\nAby dostawać powiadomienia z nowymi zastępstwami przypisanymi Twojej klasie, naciśnij przycisk **Uczeń**."
+					+ "\n\n**Jesteś nauczycielem?**"
+					+ "\nAby dostawać powiadomienia z nowymi zastępstwami przypisanymi Tobie, naciśnij przycisk **Nauczyciel**."
+					+ "\n\nAby wyczyścić wszystkie ustawione filtry, naciśnij przycisk **Wyczyść filtry**."
+				),
+				color=Constants.KOLOR
 			)
-			embed.set_footer(text="Projekt licencjonowany na podstawie licencji MIT. Stworzone z ❤️ przez Kacpra Górkę!")
+			embed.set_footer(text=Constants.DŁUŻSZA_STOPKA)
 			await interaction.response.send_message(embed=embed, view=view)
 			logujPolecenia(interaction, success=True)
 		except Exception as e:
 			logujPolecenia(interaction, success=False, error_message=str(e))
-			logiKonsoli.exception(f"Wystąpił błąd podczas wywołania polecenia /skonfiguruj. Więcej informacji: {e}")
+			logiKonsoli.exception(f"Wystąpił błąd podczas wywołania polecenia „/skonfiguruj”. Więcej informacji: {e}")
 			try:
 				if interaction.response.is_done():
 					await interaction.followup.send(f"Wystąpił błąd. Więcej informacji: {str(e)}", ephemeral=True)

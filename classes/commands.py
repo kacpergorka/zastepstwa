@@ -11,12 +11,14 @@
 #
 
 # Standardowe biblioteki
-import contextlib, re
+import contextlib
+import re
 
 # Zewnętrzne biblioteki
 import discord
 
 # Wewnętrzne importy
+from classes.constants import Constants
 from handlers.configuration import konfiguracja
 from handlers.logging import logiKonsoli
 from helpers.helpers import (
@@ -88,12 +90,12 @@ class WidokAkceptacjiSugestii(discord.ui.View):
 		embed = discord.Embed(
 			title="**Zapisano wprowadzone dane!**",
 			description=f"Aktualna konfiguracja Twojego serwera dla szkoły **{nazwaSzkoły}** została wyświetlona poniżej.",
-			color=discord.Color(0xca4449)
+			color=Constants.KOLOR
 		)
 		embed.add_field(name="Kanał tekstowy:", value=kanał)
 		embed.add_field(name="Wybrane klasy:", value=klasy)
 		embed.add_field(name="Wybrani nauczyciele:", value=nauczyciele)
-		embed.set_footer(text="Projekt licencjonowany na podstawie licencji MIT. Stworzone z ❤️ przez Kacpra Górkę!")
+		embed.set_footer(text=Constants.DŁUŻSZA_STOPKA)
 		await interaction.response.edit_message(embed=embed, view=None)
 
 	@discord.ui.button(label="Wprowadź ponownie", style=discord.ButtonStyle.secondary)
@@ -139,9 +141,9 @@ class ModalWybierania(discord.ui.Modal):
 						+ "\n".join(f"- **{wprowadzoneDane}**" for wprowadzoneDane in nieZnaleziono)
 						+ "\n\nSpróbuj ponownie, naciskając przycisk **Wprowadź ponownie**."
 					),
-					color=discord.Color(0xca4449),
+					color=Constants.KOLOR
 				)
-				embed.set_footer(text="Projekt licencjonowany na podstawie licencji MIT. Stworzone z ❤️ przez Kacpra Górkę!")
+				embed.set_footer(text=Constants.DŁUŻSZA_STOPKA)
 				view = WidokPonownegoWprowadzania(self.typDanych, self.lista, self.wiadomość, self.identyfikatorKanału, self.szkoła)
 				await interaction.response.defer()
 				await self.wiadomość.edit(embed=embed, view=view)
@@ -157,11 +159,11 @@ class ModalWybierania(discord.ui.Modal):
 				opis += "\nJeśli akceptujesz propozycje, naciśnij przycisk **Akceptuj sugestie**. Jeśli chcesz wpisać ponownie, naciśnij przycisk **Wprowadź ponownie**."
 
 				embed = discord.Embed(
-					title=f"Sugestie dopasowania wprowadzonych danych",
+					title="Sugestie dopasowania wprowadzonych danych",
 					description=opis,
-					color=discord.Color(0xca4449),
+					color=Constants.KOLOR
 				)
-				embed.set_footer(text="Projekt licencjonowany na podstawie licencji MIT. Stworzone z ❤️ przez Kacpra Górkę!")
+				embed.set_footer(text=Constants.DŁUŻSZA_STOPKA)
 				view = WidokAkceptacjiSugestii(self.typDanych, identyfikatorSerwera, idealneDopasowania, sugestie, self.lista, self.wiadomość, self.identyfikatorKanału, self.szkoła)
 				await interaction.response.defer()
 				await self.wiadomość.edit(embed=embed, view=view)
@@ -181,12 +183,12 @@ class ModalWybierania(discord.ui.Modal):
 			embed = discord.Embed(
 				title="**Zapisano wprowadzone dane!**",
 				description=f"Aktualna konfiguracja Twojego serwera dla szkoły **{nazwaSzkoły}** została wyświetlona poniżej.",
-				color=discord.Color(0xca4449)
+				color=Constants.KOLOR
 			)
 			embed.add_field(name="Kanał tekstowy:", value=kanał)
 			embed.add_field(name="Wybrane klasy:", value=klasy)
 			embed.add_field(name="Wybrani nauczyciele:", value=nauczyciele)
-			embed.set_footer(text="Projekt licencjonowany na podstawie licencji MIT. Stworzone z ❤️ przez Kacpra Górkę!")
+			embed.set_footer(text=Constants.DŁUŻSZA_STOPKA)
 			await interaction.response.defer()
 			await self.wiadomość.edit(embed=embed, view=None)
 		except Exception as e:
@@ -207,9 +209,9 @@ class PrzyciskUczeń(discord.ui.Button):
 			embed = discord.Embed(
 				title="**Opcja niedostępna!**",
 				description="Ta opcja nie jest dostępna w Twojej szkole. W razie pytań skontaktuj się z administratorem bota.",
-				color=discord.Color(0xca4449),
+				color=Constants.KOLOR
 			)
-			embed.set_footer(text="Stworzone z ❤️ przez Kacpra Górkę!")
+			embed.set_footer(text=Constants.KRÓTSZA_STOPKA)
 			await interaction.response.send_message(embed=embed, ephemeral=True)
 		else:
 			try:
@@ -232,9 +234,9 @@ class PrzyciskNauczyciel(discord.ui.Button):
 			embed = discord.Embed(
 				title="**Opcja niedostępna!**",
 				description="Ta opcja nie jest dostępna w Twojej szkole. W razie pytań skontaktuj się z administratorem bota.",
-				color=discord.Color(0xca4449),
+				color=Constants.KOLOR
 			)
-			embed.set_footer(text="Stworzone z ❤️ przez Kacpra Górkę!")
+			embed.set_footer(text=Constants.KRÓTSZA_STOPKA)
 			await interaction.response.send_message(embed=embed, ephemeral=True)
 		else:
 			try:
@@ -257,9 +259,9 @@ class PrzyciskWyczyśćFiltry(discord.ui.Button):
 			embed = discord.Embed(
 				title="**Wyczyszczono konfigurację serwera**",
 				description="Twój serwer nie będzie otrzymywał powiadomień z nowymi zastępstwami do czasu ponownej ich konfiguracji.",
-				color=discord.Color(0xca4449),
+				color=Constants.KOLOR
 			)
-			embed.set_footer(text="Stworzone z ❤️ przez Kacpra Górkę!")
+			embed.set_footer(text=Constants.KRÓTSZA_STOPKA)
 			await interaction.response.edit_message(embed=embed, view=None)
 		except Exception as e:
 			logiKonsoli.exception(f"Wystąpił błąd po naciśnięciu przycisku „Wyczyść filtry” dla {interaction.user} na serwerze {interaction.guild}. Więcej informacji: {e}")
