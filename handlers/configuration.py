@@ -11,7 +11,10 @@
 #
 
 # Standardowe biblioteki
-import asyncio, contextlib, json, os
+import asyncio
+import contextlib
+import json
+import os
 from pathlib import Path
 
 # Wewnętrzne importy
@@ -37,7 +40,7 @@ def wczytajKonfiguracje(path=ścieżkaKonfiguracji):
 		return wynik
 
 	domyślne = {
-		"wersja": "2.2.6.3-stable",
+		"wersja": "2.2.7.0-stable",
 		"token": "",
 		"koniec-roku-szkolnego": "2026-06-26",
 		"serwery": {},

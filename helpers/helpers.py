@@ -11,7 +11,12 @@
 #
 
 # Standardowe biblioteki
-import asyncio, copy, difflib, hashlib, re, unicodedata
+import asyncio
+import copy
+import difflib
+import hashlib
+import re
+import unicodedata
 from collections import defaultdict
 from datetime import datetime
 

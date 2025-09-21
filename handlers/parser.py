@@ -11,11 +11,16 @@
 #
 
 # Standardowe biblioteki
-import aiohttp, asyncio, re
+import aiohttp
+import asyncio
+import re
 from collections import defaultdict
 
 # Zewnętrzne biblioteki
-from bs4 import BeautifulSoup, NavigableString
+from bs4 import (
+	BeautifulSoup,
+	NavigableString
+)
 
 # Wewnętrzne importy
 from handlers.logging import logiKonsoli

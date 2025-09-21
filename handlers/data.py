@@ -11,7 +11,10 @@
 #
 
 # Standardowe biblioteki
-import asyncio, contextlib, json, os
+import asyncio
+import contextlib
+import json
+import os
 from collections import defaultdict
 from pathlib import Path
 

@@ -11,7 +11,9 @@
 #
 
 # Standardowe biblioteki
-import asyncio, copy, discord
+import asyncio
+import copy
+import discord
 
 # Wewnętrzne importy
 from handlers.configuration import (
