@@ -27,8 +27,18 @@ from helpers.helpers import (
 
 # Wysyła aktualizacje zastępstw
 async def wyślijAktualizacje(kanał, identyfikatorSerwera, informacjeDodatkowe, aktualneWpisyZastępstw, aktualnyCzas):
-	opisTylkoDlaInformacjiDodatkowych = f"**Informacje dodatkowe zastępstw:**\n{informacjeDodatkowe}\n\n**Informacja o tej wiadomości:**\nTa wiadomość zawiera informacje dodatkowe umieszczone nad zastępstwami. Nie znaleziono dla Ciebie żadnych zastępstw pasujących do Twoich filtrów."
-	opisDlaInformacjiDodatkowych = f"**Informacje dodatkowe zastępstw:**\n{informacjeDodatkowe}\n\n**Informacja o tej wiadomości:**\nTa wiadomość zawiera informacje dodatkowe umieszczone nad zastępstwami. Wszystkie zastępstwa znajdują się pod tą wiadomością."
+	opisTylkoDlaInformacjiDodatkowych = (
+		"**Informacje dodatkowe zastępstw:**"
+		+ f"\n{informacjeDodatkowe}"
+		+ "\n\n**Informacja o tej wiadomości:**"
+		+ "\nTa wiadomość zawiera informacje dodatkowe umieszczone nad zastępstwami. Nie znaleziono dla Ciebie żadnych zastępstw pasujących do Twoich filtrów."
+	)
+	opisDlaInformacjiDodatkowych = (
+		"**Informacje dodatkowe zastępstw:**"
+		+ f"\n{informacjeDodatkowe}"
+		+ "\n\n**Informacja o tej wiadomości:**"
+		+ "\nTa wiadomość zawiera informacje dodatkowe umieszczone nad zastępstwami. Wszystkie zastępstwa znajdują się pod tą wiadomością."
+	)
 	treśćStopkiInformacjiDodakowych = f"Czas aktualizacji: {aktualnyCzas}\n{Constants.KRÓTSZA_STOPKA}"
 	try:
 		ostatniaWiadomość = None
@@ -61,22 +71,27 @@ async def wyślijAktualizacje(kanał, identyfikatorSerwera, informacjeDodatkowe,
 			await ograniczWysyłanie(kanał, embed=embed)
 
 			for tytuł, wpisyZastępstw in aktualneWpisyZastępstw:
-				tekstZastępstw = "\n\n".join(wpisyZastępstw)
-				if "Zastępstwa bez dołączonych klas!" in tytuł:
-					tekstZastępstw = tekstZastępstw + "\n\n**Informacja o tej wiadomości:**\nTe zastępstwa nie posiadają dołączonej klasy, więc zweryfikuj czy przypadkiem nie dotyczą one Ciebie!"
+				if "Zastępstwa z nieprzypisanymi klasami!" in tytuł:
+					tekstZastępstw = (
+						"\n\n".join(wpisyZastępstw)
+						+ "\n\n**Informacja o tej wiadomości:**"
+						+ "\nTe zastępstwa nie posiadają dołączonej klasy, więc zweryfikuj czy przypadkiem nie dotyczą one Ciebie!"
+					)
+				else:
+					tekstZastępstw = "\n\n".join(wpisyZastępstw)
 
 				embed = discord.Embed(
 					title=f"**{tytuł}**",
 					description=tekstZastępstw,
 					color=Constants.KOLOR
 				)
-				if not "Zastępstwa bez dołączonych klas!" in tytuł:
+				if not "Zastępstwa z nieprzypisanymi klasami!" in tytuł:
 					embed.set_footer(text="Każdy nauczyciel, którego dotyczą zastępstwa pasujące do Twoich filtrów, zostanie załączany w oddzielnej wiadomości.")
 				else:
-					embed.set_footer(text="Każdy nauczyciel, którego dotyczą zastępstwa bez dołączonej klasy, zostanie załączany w oddzielnej wiadomości.")
+					embed.set_footer(text="Każdy nauczyciel, którego dotyczą zastępstwa bez dołączonej klasy, został załączony w tej wiadomości.")
 				ostatniaWiadomość = await ograniczWysyłanie(kanał, embed=embed)
 
-		if ostatniaWiadomość and not "Zastępstwa bez dołączonych klas!" in tytuł:
+		if ostatniaWiadomość and not "Zastępstwa z nieprzypisanymi klasami!" in tytuł:
 			await ograniczReagowanie(ostatniaWiadomość, "❤️")
 	except discord.DiscordException as e:
 		logiKonsoli.exception(f"Wystąpił błąd podczas wysyłania wiadomości do serwera o ID {identyfikatorSerwera}. Więcej informacji: {e}")

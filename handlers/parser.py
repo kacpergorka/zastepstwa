@@ -167,12 +167,32 @@ def wyodrębnijDane(zawartośćStrony, wybraneKlasy, wybraniNauczyciele=None, li
 				pola = [lekcja, opis, zastępca, uwagi]
 				etykiety = ["Lekcja", "Opis", "Zastępca", "Uwagi"]
 
+				# Wyodrębnia zawierające przydatną wartość wpisy zastępstw
 				def wyodrębnijPrzydatne(wartość, etykieta):
 					return bool(wartość and wartość.lower() != etykieta.lower())
+
 				if not any(wyodrębnijPrzydatne(wartość, etykieta) for wartość, etykieta in zip(pola, etykiety)):
 					continue
 
+				komórkiWiersza = [lekcja, opis, zastępca, uwagi]
+				dopasowaneDoKlasy = dopasujDoKlasy(komórkiWiersza, wybraneKlasy)
+				wyodrębnieniNauczyciele = wyodrębnijNauczycieli(aktualnyNauczyciel, zastępca)
+				dopasowaneDoNauczyciela = dopasujDoNauczyciela(wyodrębnieniNauczyciele, wybraniNauczyciele)
+				zastępstwoBezKlasy = False
+
+				if wybraneKlasy:
+					pełnyTekst = " ".join(komórkiWiersza)
+					if listaKlas:
+						znalezionoKlasy = any(re.search(r"\b" + re.escape(normalizujTekst(klasa)) + r"\b", normalizujTekst(pełnyTekst)) for klasa in listaKlas)
+						zastępstwoBezKlasy = not znalezionoKlasy
+					else:
+						if not re.search(r"\d", pełnyTekst):
+							zastępstwoBezKlasy = True
+
 				wierszeWpisówZastępstw = []
+				nazwaNauczyciela = aktualnyNauczyciel or ", ".join(wyodrębnieniNauczyciele)
+				if zastępstwoBezKlasy:
+					wierszeWpisówZastępstw.append(f"**Nauczyciel:** {nazwaNauczyciela}")
 				for wartość, etykieta in zip(pola, etykiety):
 					if wyodrębnijPrzydatne(wartość, etykieta):
 						wierszeWpisówZastępstw.append(f"**{etykieta}:** {wartość}")
@@ -183,26 +203,12 @@ def wyodrębnijDane(zawartośćStrony, wybraneKlasy, wybraniNauczyciele=None, li
 				if not tekstWpisówZastępstw:
 					continue
 
-				komórkiWiersza = [lekcja, opis, zastępca, uwagi]
-				dopasowaneDoKlasy = dopasujDoKlasy(komórkiWiersza, wybraneKlasy)
-				wyodrębnieniNauczyciele = wyodrębnijNauczycieli(aktualnyNauczyciel, zastępca)
-				dopasowaneDoNauczyciela = dopasujDoNauczyciela(wyodrębnieniNauczyciele, wybraniNauczyciele)
-				zastępstwoBezKlasy = False
-				if wybraneKlasy:
-					pełnyTekst = " ".join(komórkiWiersza)
-					if listaKlas:
-						znalezionoKlasy = any(re.search(r"\b" + re.escape(normalizujTekst(klasa)) + r"\b", normalizujTekst(pełnyTekst)) for klasa in listaKlas)
-						zastępstwoBezKlasy = not znalezionoKlasy
-					else:
-						if not re.search(r"\d", pełnyTekst):
-							zastępstwoBezKlasy = True
 				if (wybraneKlasy or wybraniNauczyciele) and (dopasowaneDoKlasy or dopasowaneDoNauczyciela or zastępstwoBezKlasy):
-					domyślnyTytuł = aktualnyNauczyciel or ", ".join(wyodrębnieniNauczyciele) or "Ogólne"
-					kluczNauczyciela = f"Zastępstwa bez dołączonych klas!\n{domyślnyTytuł}" if zastępstwoBezKlasy else domyślnyTytuł
-					zgrupowane[kluczNauczyciela].append(tekstWpisówZastępstw)
+					domyślnyTytuł = "Zastępstwa z nieprzypisanymi klasami!" if zastępstwoBezKlasy else nazwaNauczyciela
+					zgrupowane[domyślnyTytuł].append(tekstWpisówZastępstw)
 
 		wpisyZastępstw = [(nauczyciel, zgrupowane[nauczyciel]) for nauczyciel in zgrupowane if zgrupowane[nauczyciel]]
-		wpisyZastępstw.sort(key=lambda x: 0 if "Zastępstwa bez dołączonych klas!" in x[0] else 1)
+		wpisyZastępstw.sort(key=lambda x: 0 if "Zastępstwa z nieprzypisanymi klasami!" in x[0] else 1)
 
 		if not informacjeDodatkowe:
 			maZastępstwa = czySąZastępstwa(wiersze)
@@ -222,6 +228,7 @@ def wyodrębnijDane(zawartośćStrony, wybraneKlasy, wybraniNauczyciele=None, li
 			logiKonsoli.debug(f"Wyodrębniono {len(wpisyZastępstw)} wpis.")
 		elif 2 <= len(wpisyZastępstw) <= 4:
 			logiKonsoli.debug(f"Wyodrębniono {len(wpisyZastępstw)} wpisy.")
+
 		return informacjeDodatkowe, wpisyZastępstw
 	except Exception as e:
 		logiKonsoli.exception(f"Wystąpił błąd podczas przetwarzania HTML. Więcej informacji: {e}")

@@ -45,7 +45,6 @@ from handlers.notifications import wyślijAktualizacje
 from handlers.parser import wyodrębnijDane
 from handlers.scraper import pobierzZawartośćStrony
 from helpers.helpers import (
-	normalizujTekst,
 	obliczSumęKontrolną,
 	odmieńZastępstwa,
 	ograniczUsuwanie,
@@ -216,10 +215,16 @@ async def sprawdźSerwery(identyfikatorSerwera, zawartośćStrony):
 						statystykiNauczycieli = {}
 
 					for tytuł, wpisy in (aktualneWpisyZastępstw or []):
-						nazwa = (tytuł or "").strip() or "Ogólne"
-						if normalizujTekst(nazwa) == "ogolne":
+						nazwa = (tytuł or "").strip()
+						if "Zastępstwa z nieprzypisanymi klasami!" in nazwa:
+							for wpis in wpisy:
+								if "**Nauczyciel:**" in wpis:
+									nauczyciel = wpis.split("**Nauczyciel:**", 1)[1].strip()
+									nauczyciel = nauczyciel.split("\n", 1)[0].strip().split("/", 1)[0].strip()
+									statystykiNauczycieli[nauczyciel] = int(statystykiNauczycieli.get(nauczyciel, 0)) + 1
 							continue
-						klucz = nazwa.split("\n", 1)[-1].split("/", 1)[0].strip()
+
+						klucz = nazwa.split("/", 1)[0].strip()
 						statystykiNauczycieli[klucz] = int(statystykiNauczycieli.get(klucz, 0)) + len(wpisy)
 				else:
 					nowyLicznik = poprzedniLicznik
