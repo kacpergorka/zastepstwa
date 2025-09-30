@@ -10,7 +10,7 @@ Korzystając z bota, Użytkownik zgadza się na przestrzeganie postanowień nini
 
 ## §2. Dostęp i korzystanie z Bota
 `§2.1.` Właściciel udziela Użytkownikowi **odwołalnego, niewyłącznego i nieprzenoszalnego** uprawnienia do korzystania z hostowanej instancji Bota w ramach [Discorda](https://discord.com), zgodnie z niniejszą Umową oraz [warunkami świadczenia usług Discorda](https://discord.com/terms).  
-`§2.2.` Użytkownik zobowiązuje się posiadać ważne konto Discord oraz spełniać minimalny wiek wymagany przez obowiązujące prawo. 
+`§2.2.` Użytkownik zobowiązuje się posiadać ważne konto Discord oraz spełniać minimalny wiek wymagany przez obowiązujące prawo.  
 – Dla użytkowników z obszaru Unii Europejskiej i Europejskiego Obszaru Gospodarczego minimalny wiek dla wyrażenia samodzielnej zgody na przetwarzanie danych osobowych w kontekście usług społeczeństwa informacyjnego wynosi 16 lat (art. 8 RODO), chyba że prawo państwa członkowskiego stanowi inaczej. Jeżeli użytkownik jest młodszy niż wymagany wiek zgodnie z prawem właściwym, korzystanie z Bota jest dozwolone wyłącznie za zgodą lub zgodą zatwierdzoną przez rodzica lub opiekuna prawnego.  
 – Użytkownik potwierdza, że spełnia warunek wiekowy obowiązujący w jego jurysdykcji lub że uzyskał odpowiednią zgodę opiekuna.  
 `§2.3.` Właściciel może stosować **limity i zasady fair use**, w szczególności ograniczenia liczby żądań, dostępu do wybranych funkcji czy liczby obsługiwanych serwerów.  

@@ -9,7 +9,7 @@ Polityka dotyczy danych przetwarzanych przez hostowaną instancję Bota. Przetwa
 
 ## §1. Jakie dane są gromadzone
 `§1.1.` **Dane identyfikacyjne z Discorda** – identyfikatory użytkowników, serwerów i kanałów tekstowych oraz nazwy użytkowników.  
-`§1.2.` **Dane konfiguracyjne serwera** – wybrane podczas konfiguracji filtry (klasy, nauczyciele) i kanały tekstowe, statystyki zastępstw nauczycieli, licznik wysłanych zastępstw i znacznik ostatniego podsumowania rocznego statystyk.   
+`§1.2.` **Dane konfiguracyjne serwera** – wybrane podczas konfiguracji filtry (klasy, nauczyciele) i kanały tekstowe, statystyki zastępstw nauczycieli, licznik wysłanych zastępstw i znacznik ostatniego podsumowania rocznego statystyk.  
 `§1.3.` **Treść poleceń i użycie Bota** – argumenty wywołań poleceń oraz dane techniczne zapisywane w logach.  
 `§1.4.` **Dane zewnętrzne** – Bot okresowo pobiera treść ze strony wskazanej w pliku konfiguracyjnym i publikuje jej przetworzoną treść w kanałach Discord. Dane pochodzące ze źródeł zewnętrznych (np. nazwy nauczycieli) mogą identyfikować osoby fizyczne. Bot normalizuje i indeksuje takie dane w celu dopasowania i tworzenia statystyk (zob. `§2.1.` i `§9.2.`).  
 `§1.5.` **Metadane konfiguracyjne i predefiniowane listy** – Plik konfiguracyjny zawiera dodatkowe informacje techniczne, takie jak numer wersji oprogramowania, data zakończenia roku szkolnego oraz domyślne kodowanie strony wykorzystywanej do pobierania informacji o zastępstwach. Ponadto przechowuje predefiniowane listy klas i listy nauczycieli przypisane do poszczególnych szkół. Lista nauczycieli może zawierać imiona i nazwiska (lub inicjały), które są przetwarzane w celu dopasowania danych zewnętrznych oraz tworzenia statystyk zastępstw (zob. `§9.2.` i `§2.4.`).  
