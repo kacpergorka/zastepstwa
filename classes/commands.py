@@ -1,13 +1,13 @@
 #
 #
-#    ▄▄▄▄▄▄▄▄     ▄▄       ▄▄▄▄    ▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄      ▄▄▄▄    ▄▄▄▄▄▄▄▄ ▄▄      ▄▄    ▄▄   
-#    ▀▀▀▀▀███    ████    ▄█▀▀▀▀█   ▀▀▀██▀▀▀  ██▀▀▀▀▀▀  ██▀▀▀▀█▄  ▄█▀▀▀▀█   ▀▀▀██▀▀▀ ██      ██   ████  
-#        ██▀     ████    ██▄          ██     ██        ██    ██  ██▄          ██    ▀█▄ ██ ▄█▀   ████  
-#      ▄██▀     ██  ██    ▀████▄      ██     ███████   ██████▀    ▀████▄      ██     ██ ██ ██   ██  ██ 
-#     ▄██       ██████        ▀██     ██     ██        ██             ▀██     ██     ███▀▀███   ██████ 
+#    ▄▄▄▄▄▄▄▄     ▄▄       ▄▄▄▄    ▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄      ▄▄▄▄    ▄▄▄▄▄▄▄▄ ▄▄      ▄▄    ▄▄
+#    ▀▀▀▀▀███    ████    ▄█▀▀▀▀█   ▀▀▀██▀▀▀  ██▀▀▀▀▀▀  ██▀▀▀▀█▄  ▄█▀▀▀▀█   ▀▀▀██▀▀▀ ██      ██   ████
+#        ██▀     ████    ██▄          ██     ██        ██    ██  ██▄          ██    ▀█▄ ██ ▄█▀   ████
+#      ▄██▀     ██  ██    ▀████▄      ██     ███████   ██████▀    ▀████▄      ██     ██ ██ ██   ██  ██
+#     ▄██       ██████        ▀██     ██     ██        ██             ▀██     ██     ███▀▀███   ██████
 #    ███▄▄▄▄▄  ▄██  ██▄  █▄▄▄▄▄█▀     ██     ██▄▄▄▄▄▄  ██        █▄▄▄▄▄█▀     ██     ███  ███  ▄██  ██▄
 #    ▀▀▀▀▀▀▀▀  ▀▀    ▀▀   ▀▀▀▀▀       ▀▀     ▀▀▀▀▀█▀▀  ▀▀         ▀▀▀▀▀       ▀▀     ▀▀▀  ▀▀▀  ▀▀    ▀▀
-#                                                █▄▄                                                   
+#                                                █▄▄
 #
 
 # Standardowe biblioteki
@@ -30,9 +30,74 @@ from helpers.helpers import (
 	zapiszKluczeSerwera
 )
 
-# Widok ponownego wprowadzania (polecenie /skonfiguruj)
+class WidokPodsumowania():
+	"""
+	Widok podsumowujący wcześniej wprowadzoną konfigurację bota dla serwera Discord.
+	"""
+
+	@staticmethod
+	def utwórz(identyfikatorSerwera: str) -> discord.Embed:
+		"""
+		Tworzy i zwraca embed podsumowujący konfigurację bota dla serwera Discord.
+
+		Args:
+			identyfikatorSerwera (str): ID serwera Discord, dla którego generowany jest embed.
+
+		Returns:
+			discord.Embed: Embed z podsumowaniem aktualnej konfiguracji bota dla serwera Discord.
+		"""
+
+		konfiguracjaSerwera = pobierzSłownikSerwera(identyfikatorSerwera)
+		identyfikatorSzkoły = konfiguracjaSerwera.get("szkoła", "")
+		nazwaSzkoły = konfiguracja.get("szkoły", {}).get(identyfikatorSzkoły, {}).get("nazwa", identyfikatorSzkoły)
+
+		kanał = f"<#{konfiguracjaSerwera.get('identyfikator-kanalu', '')}>" if konfiguracjaSerwera.get("identyfikator-kanalu", "") else "Brak"
+		klasy = ", ".join(re.sub(r"(\d)\s+([A-Za-z])", r"\1\2", klasa) for klasa in konfiguracjaSerwera.get("wybrane-klasy", [])) or "Brak"
+		nauczyciele = ", ".join(f"{nauczyciel}" for nauczyciel in konfiguracjaSerwera.get("wybrani-nauczyciele", [])) or "Brak"
+
+		embed = discord.Embed(
+			title="**Zapisano wprowadzone dane!**",
+			description=f"Aktualna konfiguracja Twojego serwera dla szkoły **{nazwaSzkoły}** została wyświetlona poniżej.",
+			color=Constants.KOLOR
+		)
+		embed.add_field(
+			name="Kanał tekstowy:",
+			value=kanał
+		)
+		embed.add_field(
+			name="Wybrane klasy:",
+			value=klasy
+		)
+		embed.add_field(
+			name="Wybrani nauczyciele:",
+			value=nauczyciele
+		)
+		embed.set_footer(text=Constants.DŁUŻSZA_STOPKA)
+		return embed
+
+
 class WidokPonownegoWprowadzania(discord.ui.View):
-	def __init__(self, typDanych: str, listaDoDopasowania: list[str], wiadomość: discord.Message, identyfikatorKanału: str, szkoła: str, timeout: float = 120.0):
+	"""
+	Widok umożliwiający użytkownikowi ponowne wprowadzenie danych po naciśnięciu przycisku `Wprowadź ponownie`.
+
+	Attributes:
+		typDanych (str): Typ danych do wprowadzenia (np. `klasy` lub `nauczyciele`).
+		listaDoDopasowania (list[str]): Lista elementów dostępnych do dopasowania.
+		wiadomość (discord.Message): Wiadomość, w której widok jest wyświetlany.
+		identyfikatorKanału (str): ID kanału tekstowego Discord, który został wybrany w opcjach polecenia.
+		szkoła (str): ID szkoły, której dane przeznacza się do wykorzystania.
+		timeout (float): Czas w sekundach, po którym widok wygasa (domyślnie 120.0).
+	"""
+
+	def __init__(
+		self,
+		typDanych: str,
+		listaDoDopasowania: list[str],
+		wiadomość: discord.Message,
+		identyfikatorKanału: str,
+		szkoła: str,
+		timeout: float=120.0
+	) -> None:
 		super().__init__(timeout=timeout)
 		self.typDanych = typDanych
 		self.lista = listaDoDopasowania
@@ -40,18 +105,57 @@ class WidokPonownegoWprowadzania(discord.ui.View):
 		self.identyfikatorKanału = identyfikatorKanału
 		self.szkoła = szkoła
 
-	@discord.ui.button(label="Wprowadź ponownie", style=discord.ButtonStyle.secondary)
-	async def wprowadźPonownie(self, interaction: discord.Interaction, button: discord.ui.Button):
+	@discord.ui.button(
+		label="Wprowadź ponownie",
+		style=discord.ButtonStyle.secondary
+	)
+
+	async def wprowadźPonownie(
+		self,
+		interaction: discord.Interaction,
+		button: discord.ui.Button
+	) -> None:
 		try:
 			await interaction.response.send_modal(ModalWybierania(self.typDanych, self.lista, self.wiadomość, self.identyfikatorKanału, self.szkoła))
 		except Exception as e:
-			logiKonsoli.exception(f"Wystąpił błąd po naciśnięciu przycisku „Wprowadź ponownie” (w class WidokPonownegoWprowadzania) dla {interaction.user} na serwerze {interaction.guild}. Więcej informacji: {e}")
+			logiKonsoli.exception(
+				f"Wystąpił błąd po naciśnięciu przycisku „Wprowadź ponownie” (w class WidokPonownegoWprowadzania) dla użytkownika {interaction.user} (ID: {interaction.user.id}) na serwerze „{interaction.guild}” (ID: {interaction.id}). Więcej informacji: {e}"
+			)
 			with contextlib.suppress(Exception):
-				await interaction.followup.send("Wystąpił błąd podczas otwierania formularza. Spróbuj ponownie lub skontaktuj się z administratorem bota.", ephemeral=True)
+				await interaction.followup.send(
+					"Wystąpił błąd podczas otwierania formularza. Spróbuj ponownie lub skontaktuj się z administratorem bota.",
+					ephemeral=True
+				)
 
-# Widok akceptacji sugestii (polecenie /skonfiguruj)
+
 class WidokAkceptacjiSugestii(discord.ui.View):
-	def __init__(self, typDanych: str, identyfikatorSerwera: str, idealneDopasowania: list[str], sugestie: dict[str, str], listaDoDopasowania: list[str], wiadomość: discord.Message, identyfikatorKanału: str, szkoła: str, timeout: float = 120.0):
+	"""
+	Widok umożliwiający użytkownikowi akceptację lub ponowne wprowadzenie danych w formularzu konfiguracji dla serwera Discord.
+
+	Attributes:
+		typDanych (str): Typ danych do wprowadzenia (np. `klasy` lub `nauczyciele`).
+		identyfikatorSerwera (str): ID serwera Discord, dla którego dane są zapisywane.
+		idealneDopasowania (list[str]): Lista idealnych dopasowań wprowadzonych danych.
+		sugestie (dict[str, str]): Propozycje dopasowania danych w formacie {oryginalne: sugestia}.
+		listaDoDopasowania (list[str]): Lista elementów dostępnych do dopasowania.
+		wiadomość (discord.Message): Wiadomość, w której widok jest wyświetlany.
+		identyfikatorKanału (str): ID kanału tekstowego Discord, który został wybrany w opcjach polecenia.
+		szkoła (str): ID szkoły, której dane przeznacza się do wykorzystania.
+		timeout (float): Czas w sekundach, po którym widok wygasa (domyślnie 120.0).
+	"""
+
+	def __init__(
+		self,
+		typDanych: str,
+		identyfikatorSerwera: str,
+		idealneDopasowania: list[str],
+		sugestie: dict[str, str],
+		listaDoDopasowania: list[str],
+		wiadomość: discord.Message,
+		identyfikatorKanału: str,
+		szkoła: str,
+		timeout: float=120.0
+	) -> None:
 		super().__init__(timeout=timeout)
 		self.typDanych = typDanych
 		self.identyfikatorSerwera = identyfikatorSerwera
@@ -62,54 +166,91 @@ class WidokAkceptacjiSugestii(discord.ui.View):
 		self.identyfikatorKanału = identyfikatorKanału
 		self.szkoła = szkoła
 
-	@discord.ui.button(label="Akceptuj sugestie", style=discord.ButtonStyle.success)
-	async def akceptujSugestie(self, interaction: discord.Interaction, button: discord.ui.Button):
+	@discord.ui.button(
+		label="Akceptuj sugestie",
+		style=discord.ButtonStyle.success
+	)
+
+	async def akceptujSugestie(
+		self,
+		interaction: discord.Interaction,
+		button: discord.ui.Button
+	) -> None:
 		try:
 			finalne = []
+
 			for dopasowanie in self.idealneDopasowania:
 				if dopasowanie not in finalne:
 					finalne.append(dopasowanie)
+
 			for sugestia in self.sugestie.values():
 				if sugestia not in finalne:
 					finalne.append(sugestia)
+
+			if self.typDanych == "klasy":
+				kluczFiltru = "wybrane-klasy"
+			elif self.typDanych == "nauczyciele":
+				kluczFiltru = "wybrani-nauczyciele"
+
 			finalne = usuńDuplikaty(finalne)
-			kluczFiltru = "wybrane-klasy" if self.typDanych == "klasy" else "wybrani-nauczyciele"
 			await zapiszKluczeSerwera(self.identyfikatorSerwera, {"identyfikator-kanalu": self.identyfikatorKanału, "szkoła": self.szkoła, kluczFiltru: finalne})
 		except Exception as e:
-			logiKonsoli.exception(f"Wystąpił błąd po naciśnięciu przycisku „Akceptuj sugestie” dla {interaction.user} na serwerze {interaction.guild}. Więcej informacji: {e}")
+			logiKonsoli.exception(
+				f"Wystąpił błąd po naciśnięciu przycisku „Akceptuj sugestie” dla użytkownika {interaction.user} (ID: {interaction.user.id}) na serwerze „{interaction.guild}” (ID: {interaction.id}). Więcej informacji: {e}"
+			)
 			with contextlib.suppress(Exception):
-				await interaction.followup.send("Wystąpił błąd podczas akceptacji danych. Spróbuj ponownie lub skontaktuj się z administratorem bota.", ephemeral=True)
+				await interaction.followup.send(
+					"Wystąpił błąd podczas akceptacji danych. Spróbuj ponownie lub skontaktuj się z administratorem bota.",
+					ephemeral=True
+				)
 
-		konfiguracjaSerwera = pobierzSłownikSerwera(str(interaction.guild.id))
-		kanał = f"<#{konfiguracjaSerwera["identyfikator-kanalu"]}>" if konfiguracjaSerwera.get("identyfikator-kanalu") else "Brak"
-		klasy = ", ".join(re.sub(r"(\d)\s+([A-Za-z])", r"\1\2", klasa) for klasa in konfiguracjaSerwera.get("wybrane-klasy", [])) or "Brak"
-		nauczyciele = ", ".join(f"{nauczyciel}" for nauczyciel in konfiguracjaSerwera.get("wybrani-nauczyciele", [])) or "Brak"
-		identyfikatorSzkoły = konfiguracjaSerwera.get("szkoła")
-		nazwaSzkoły = konfiguracja["szkoły"].get(identyfikatorSzkoły, {}).get("nazwa", identyfikatorSzkoły)
-
-		embed = discord.Embed(
-			title="**Zapisano wprowadzone dane!**",
-			description=f"Aktualna konfiguracja Twojego serwera dla szkoły **{nazwaSzkoły}** została wyświetlona poniżej.",
-			color=Constants.KOLOR
-		)
-		embed.add_field(name="Kanał tekstowy:", value=kanał)
-		embed.add_field(name="Wybrane klasy:", value=klasy)
-		embed.add_field(name="Wybrani nauczyciele:", value=nauczyciele)
-		embed.set_footer(text=Constants.DŁUŻSZA_STOPKA)
+		embed = WidokPodsumowania.utwórz(str(interaction.guild.id))
 		await interaction.response.edit_message(embed=embed, view=None)
 
-	@discord.ui.button(label="Wprowadź ponownie", style=discord.ButtonStyle.secondary)
-	async def wprowadźPonownie(self, interaction: discord.Interaction, button: discord.ui.Button):
+	@discord.ui.button(
+		label="Wprowadź ponownie",
+		style=discord.ButtonStyle.secondary
+	)
+
+	async def wprowadźPonownie(
+		self,
+		interaction: discord.Interaction,
+		button: discord.ui.Button
+	) -> None:
 		try:
 			await interaction.response.send_modal(ModalWybierania(self.typDanych, self.lista, self.wiadomość, self.identyfikatorKanału, self.szkoła))
 		except Exception as e:
-			logiKonsoli.exception(f"Wystąpił błąd po naciśnięciu przycisku „Wprowadź ponownie” (w class WidokAkceptacjiSugestii) dla {interaction.user} na serwerze {interaction.guild}. Więcej informacji: {e}")
+			logiKonsoli.exception(
+				f"Wystąpił błąd po naciśnięciu przycisku „Wprowadź ponownie” (w class WidokAkceptacjiSugestii) dla użytkownika {interaction.user} (ID: {interaction.user.id}) na serwerze „{interaction.guild}” (ID: {interaction.id}). Więcej informacji: {e}"
+			)
 			with contextlib.suppress(Exception):
-				await interaction.followup.send("Wystąpił błąd podczas otwierania formularza. Spróbuj ponownie lub skontaktuj się z administratorem bota.", ephemeral=True)
+				await interaction.followup.send(
+					"Wystąpił błąd podczas otwierania formularza. Spróbuj ponownie lub skontaktuj się z administratorem bota.",
+					ephemeral=True
+				)
 
-# Modal wybierania (polecenie /skonfiguruj)
+
 class ModalWybierania(discord.ui.Modal):
-	def __init__(self, typDanych: str, listaDoDopasowania: list[str], wiadomość: discord.Message, identyfikatorKanału: str, szkoła: str):
+	"""
+	Modal pozwalający użytkownikowi wprowadzić dane do formularza konfiguracji dla serwera Discord.
+
+	Attributes:
+		typDanych (str): Typ danych do wprowadzenia (np. `klasy` lub `nauczyciele`).
+		listaDoDopasowania (list[str]): Lista elementów dostępnych do dopasowania.
+		wiadomość (discord.Message): Wiadomość, w której widok jest wyświetlany.
+		identyfikatorKanału (str): ID kanału tekstowego Discord, który został wybrany w opcjach polecenia.
+		szkoła (str): ID szkoły, której dane przeznacza się do wykorzystania.
+		pole (discord.ui.TextInput): Pole tekstowe w modalu do wprowadzania danych.
+	"""
+
+	def __init__(
+		self,
+		typDanych: str,
+		listaDoDopasowania: list[str],
+		wiadomość: discord.Message,
+		identyfikatorKanału: str,
+		szkoła: str
+	) -> None:
 		super().__init__(title="Wprowadź dane do formularza")
 		self.typDanych = typDanych
 		self.lista = listaDoDopasowania
@@ -117,8 +258,13 @@ class ModalWybierania(discord.ui.Modal):
 		self.identyfikatorKanału = identyfikatorKanału
 		self.szkoła = szkoła
 
-		placeholder = "np. 1A, 2D, 3F" if typDanych == "klasy" else "np. A. Kowalski, W. Nowak"
-		label = "Wprowadź klasy (oddzielaj przecinkami)." if typDanych == "klasy" else "Wprowadź nauczycieli (oddzielaj przecinkami)."
+		if self.typDanych == "klasy":
+			label = "Wprowadź klasy (oddzielaj przecinkami)."
+			placeholder = "np. 1A, 2D, 3F"
+		elif self.typDanych == "nauczyciele":
+			label = "Wprowadź nauczycieli (oddzielaj przecinkami)."
+			placeholder = "np. A. Kowalski, W. Nowak"
+
 		self.pole = discord.ui.TextInput(
 			label=label,
 			style=discord.TextStyle.long,
@@ -126,13 +272,16 @@ class ModalWybierania(discord.ui.Modal):
 		)
 		self.add_item(self.pole)
 
-	async def on_submit(self, interaction: discord.Interaction):
+	async def on_submit(
+		self,
+		interaction: discord.Interaction
+	) -> None:
 		try:
 			identyfikatorSerwera = str(interaction.guild.id)
 			suroweDane = self.pole.value
 			wpisy = [element.strip() for element in re.split(r",|;", suroweDane) if element.strip()]
-
 			idealneDopasowania, sugestie, nieZnaleziono = dopasujWpisyDoListy(wpisy, self.lista, cutoff=0.6)
+
 			if nieZnaleziono:
 				embed = discord.Embed(
 					title="**Nie znaleziono wprowadzonych danych**",
@@ -150,16 +299,15 @@ class ModalWybierania(discord.ui.Modal):
 				return
 
 			if sugestie:
-				opis = ""
-				if idealneDopasowania:
-					opis += "**Znalezione dokładne dopasowania:**\n" + ", ".join(f"**{dopasowanie}**" for dopasowanie in idealneDopasowania) + "\n\n"
-				opis += "**Proponowane dopasowania:**\n"
+				opis = "**Proponowane dopasowania:**\n"
+
 				for oryginalne, sugestia in sugestie.items():
 					opis += f"- **{oryginalne}**  →  **{sugestia}**\n"
+
 				opis += "\nJeśli akceptujesz propozycje, naciśnij przycisk **Akceptuj sugestie**. Jeśli chcesz wpisać ponownie, naciśnij przycisk **Wprowadź ponownie**."
 
 				embed = discord.Embed(
-					title="Sugestie dopasowania wprowadzonych danych",
+					title="**Sugestie dopasowania wprowadzonych danych**",
 					description=opis,
 					color=Constants.KOLOR
 				)
@@ -169,41 +317,53 @@ class ModalWybierania(discord.ui.Modal):
 				await self.wiadomość.edit(embed=embed, view=view)
 				return
 
+			if self.typDanych == "klasy":
+				kluczFiltru = "wybrane-klasy"
+			elif self.typDanych == "nauczyciele":
+				kluczFiltru = "wybrani-nauczyciele"
+
 			finalne = usuńDuplikaty(idealneDopasowania)
-			kluczFiltru = "wybrane-klasy" if self.typDanych == "klasy" else "wybrani-nauczyciele"
 			await zapiszKluczeSerwera(identyfikatorSerwera, {"identyfikator-kanalu": self.identyfikatorKanału, "szkoła": self.szkoła, kluczFiltru: finalne})
 
-			konfiguracjaSerwera = pobierzSłownikSerwera(str(interaction.guild.id))
-			kanał = f"<#{konfiguracjaSerwera["identyfikator-kanalu"]}>" if konfiguracjaSerwera.get("identyfikator-kanalu") else "Brak"
-			klasy = ", ".join(re.sub(r"(\d)\s+([A-Za-z])", r"\1\2", klasa) for klasa in konfiguracjaSerwera.get("wybrane-klasy", [])) or "Brak"
-			nauczyciele = ", ".join(f"{nauczyciel}" for nauczyciel in konfiguracjaSerwera.get("wybrani-nauczyciele", [])) or "Brak"
-			identyfikatorSzkoły = konfiguracjaSerwera.get("szkoła")
-			nazwaSzkoły = konfiguracja["szkoły"].get(identyfikatorSzkoły, {}).get("nazwa", identyfikatorSzkoły)
-
-			embed = discord.Embed(
-				title="**Zapisano wprowadzone dane!**",
-				description=f"Aktualna konfiguracja Twojego serwera dla szkoły **{nazwaSzkoły}** została wyświetlona poniżej.",
-				color=Constants.KOLOR
-			)
-			embed.add_field(name="Kanał tekstowy:", value=kanał)
-			embed.add_field(name="Wybrane klasy:", value=klasy)
-			embed.add_field(name="Wybrani nauczyciele:", value=nauczyciele)
-			embed.set_footer(text=Constants.DŁUŻSZA_STOPKA)
+			embed = WidokPodsumowania.utwórz(str(interaction.guild.id))
 			await interaction.response.defer()
 			await self.wiadomość.edit(embed=embed, view=None)
 		except Exception as e:
-			logiKonsoli.exception(f"Wystąpił błąd po naciśnięciu przycisku wysyłającego dane do zapisu (on_submit) dla {interaction.user} na serwerze {interaction.guild}. Więcej informacji: {e}")
+			logiKonsoli.exception(
+				f"Wystąpił błąd po naciśnięciu przycisku wysyłającego dane do zapisu (on_submit) dla użytkownika {interaction.user} (ID: {interaction.user.id}) na serwerze „{interaction.guild}” (ID: {interaction.id}). Więcej informacji: {e}"
+			)
 			with contextlib.suppress(Exception):
-				await interaction.response.send_message("Wystąpił błąd podczas przetwarzania danych. Spróbuj ponownie lub skontaktuj się z administratorem bota.", ephemeral=True)
+				await interaction.response.send_message(
+					"Wystąpił błąd podczas przetwarzania danych. Spróbuj ponownie lub skontaktuj się z administratorem bota.",
+					ephemeral=True
+				)
 
-# Przycisk „Uczeń” (polecenie /skonfiguruj)
+
 class PrzyciskUczeń(discord.ui.Button):
-	def __init__(self, identyfikatorKanału: str, szkoła: str):
-		super().__init__(label="Uczeń", style=discord.ButtonStyle.primary)
+	"""
+	Przycisk umożliwiający użytkownikowi wprowadzenie klas w formularzu konfiguracji dla serwera Discord.
+
+	Attributes:
+		identyfikatorKanału (str): ID kanału tekstowego Discord, który został wybrany w opcjach polecenia.
+		szkoła (str): ID szkoły, której dane przeznacza się do wykorzystania.
+	"""
+
+	def __init__(
+		self,
+		identyfikatorKanału: str,
+		szkoła: str
+	) -> None:
+		super().__init__(
+			label="Uczeń",
+			style=discord.ButtonStyle.primary
+		)
 		self.identyfikatorKanału = identyfikatorKanału
 		self.szkoła = szkoła
 
-	async def callback(self, interaction: discord.Interaction):
+	async def callback(
+		self,
+		interaction: discord.Interaction
+	) -> None:
 		listaKlas = pobierzListęKlas(self.szkoła)
 		if listaKlas == []:
 			embed = discord.Embed(
@@ -217,19 +377,42 @@ class PrzyciskUczeń(discord.ui.Button):
 			try:
 				await interaction.response.send_modal(ModalWybierania("klasy", listaKlas, interaction.message, self.identyfikatorKanału, self.szkoła))
 			except Exception as e:
-				logiKonsoli.exception(f"Wystąpił błąd po naciśnięciu przycisku „Uczeń” dla użytkownika {interaction.user} na serwerze {interaction.guild}. Więcej informacji: {e}")
+				logiKonsoli.exception(
+					f"Wystąpił błąd po naciśnięciu przycisku „Uczeń” dla użytkownika {interaction.user} (ID: {interaction.user.id}) na serwerze „{interaction.guild}” (ID: {interaction.id}). Więcej informacji: {e}"
+				)
 				with contextlib.suppress(Exception):
-					await interaction.followup.send("Wystąpił błąd podczas otwierania formularza. Spróbuj ponownie lub skontaktuj się z administratorem bota.", ephemeral=True)
+					await interaction.followup.send(
+						"Wystąpił błąd podczas otwierania formularza. Spróbuj ponownie lub skontaktuj się z administratorem bota.",
+						ephemeral=True
+					)
 
-# Przycisk „Nauczyciel” (polecenie /skonfiguruj)
+
 class PrzyciskNauczyciel(discord.ui.Button):
-	def __init__(self, identyfikatorKanału: str, szkoła: str):
-		super().__init__(label="Nauczyciel", style=discord.ButtonStyle.primary)
+	"""
+	Przycisk umożliwiający użytkownikowi wprowadzenie nauczycieli w formularzu konfiguracji dla serwera Discord.
+
+	Attributes:
+		identyfikatorKanału (str): ID kanału tekstowego Discord, który został wybrany w opcjach polecenia.
+		szkoła (str): ID szkoły, której dane przeznacza się do wykorzystania.
+	"""
+
+	def __init__(
+		self,
+		identyfikatorKanału: str,
+		szkoła: str
+	) -> None:
+		super().__init__(
+			label="Nauczyciel",
+			style=discord.ButtonStyle.primary
+		)
 		self.identyfikatorKanału = identyfikatorKanału
 		self.szkoła = szkoła
 
-	async def callback(self, interaction: discord.Interaction):
-		listaNauczycieli = ((konfiguracja.get("szkoły") or {}).get(self.szkoła, {}) or {}).get("lista-nauczycieli", [])
+	async def callback(
+		self,
+		interaction: discord.Interaction
+	) -> None:
+		listaNauczycieli = konfiguracja.get("szkoły", {}).get(self.szkoła, {}).get("lista-nauczycieli", [])
 		if listaNauczycieli == []:
 			embed = discord.Embed(
 				title="**Opcja niedostępna!**",
@@ -242,16 +425,31 @@ class PrzyciskNauczyciel(discord.ui.Button):
 			try:
 				await interaction.response.send_modal(ModalWybierania("nauczyciele", listaNauczycieli, interaction.message, self.identyfikatorKanału, self.szkoła))
 			except Exception as e:
-				logiKonsoli.exception(f"Wystąpił błąd po naciśnięciu przycisku „Nauczyciel” dla użytkownika {interaction.user} na serwerze {interaction.guild}. Więcej informacji: {e}")
+				logiKonsoli.exception(
+					f"Wystąpił błąd po naciśnięciu przycisku „Nauczyciel” dla użytkownika {interaction.user} (ID: {interaction.user.id}) na serwerze „{interaction.guild}” (ID: {interaction.id}). Więcej informacji: {e}"
+				)
 				with contextlib.suppress(Exception):
-					await interaction.followup.send("Wystąpił błąd podczas otwierania formularza. Spróbuj ponownie lub skontaktuj się z administratorem bota.", ephemeral=True)
+					await interaction.followup.send(
+						"Wystąpił błąd podczas otwierania formularza. Spróbuj ponownie lub skontaktuj się z administratorem bota.",
+						ephemeral=True
+					)
 
-# Przycisk „Wyczyść filtry” (polecenie /skonfiguruj)
+
 class PrzyciskWyczyśćFiltry(discord.ui.Button):
-	def __init__(self):
-		super().__init__(label="Wyczyść filtry", style=discord.ButtonStyle.danger)
+	"""
+	Przycisk umożliwiający użytkownikowi wyczyszczenie wszystkich filtrów w konfiguracji dla serwera Discord.
+	"""
 
-	async def callback(self, interaction: discord.Interaction):
+	def __init__(self) -> None:
+		super().__init__(
+			label="Wyczyść filtry",
+			style=discord.ButtonStyle.danger
+		)
+
+	async def callback(
+		self,
+		interaction: discord.Interaction
+	) -> None:
 		try:
 			identyfikatorSerwera = str(interaction.guild.id)
 			await wyczyśćFiltry(identyfikatorSerwera)
@@ -264,13 +462,30 @@ class PrzyciskWyczyśćFiltry(discord.ui.Button):
 			embed.set_footer(text=Constants.KRÓTSZA_STOPKA)
 			await interaction.response.edit_message(embed=embed, view=None)
 		except Exception as e:
-			logiKonsoli.exception(f"Wystąpił błąd po naciśnięciu przycisku „Wyczyść filtry” dla {interaction.user} na serwerze {interaction.guild}. Więcej informacji: {e}")
+			logiKonsoli.exception(
+				f"Wystąpił błąd po naciśnięciu przycisku „Wyczyść filtry” dla użytkownika {interaction.user} (ID: {interaction.user.id}) na serwerze „{interaction.guild}” (ID: {interaction.id}). Więcej informacji: {e}"
+			)
 			with contextlib.suppress(Exception):
-				await interaction.followup.send("Wystąpił błąd podczas przetwarzania danych. Spróbuj ponownie lub skontaktuj się z administratorem bota.", ephemeral=True)
+				await interaction.followup.send(
+					"Wystąpił błąd podczas przetwarzania danych. Spróbuj ponownie lub skontaktuj się z administratorem bota.",
+					ephemeral=True
+				)
 
-# Widok główny (polecenie /skonfiguruj)
+
 class WidokGłówny(discord.ui.View):
-	def __init__(self, identyfikatorKanału: str, szkoła: str):
+	"""
+	Główny widok konfiguracyjny dla serwera Discord. Zostaje wyświetlony w momencie wywołania polecenia.
+
+	Attributes:
+		identyfikatorKanału (str): ID kanału tekstowego Discord, który został wybrany w opcjach polecenia.
+		szkoła (str): ID szkoły, której dane przeznacza się do wykorzystania.
+	"""
+
+	def __init__(
+		self,
+		identyfikatorKanału: str,
+		szkoła: str
+	) -> None:
 		super().__init__()
 		self.add_item(PrzyciskUczeń(identyfikatorKanału, szkoła))
 		self.add_item(PrzyciskNauczyciel(identyfikatorKanału, szkoła))

@@ -1,13 +1,13 @@
 #
 #
-#    ▄▄▄▄▄▄▄▄     ▄▄       ▄▄▄▄    ▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄      ▄▄▄▄    ▄▄▄▄▄▄▄▄ ▄▄      ▄▄    ▄▄   
-#    ▀▀▀▀▀███    ████    ▄█▀▀▀▀█   ▀▀▀██▀▀▀  ██▀▀▀▀▀▀  ██▀▀▀▀█▄  ▄█▀▀▀▀█   ▀▀▀██▀▀▀ ██      ██   ████  
-#        ██▀     ████    ██▄          ██     ██        ██    ██  ██▄          ██    ▀█▄ ██ ▄█▀   ████  
-#      ▄██▀     ██  ██    ▀████▄      ██     ███████   ██████▀    ▀████▄      ██     ██ ██ ██   ██  ██ 
-#     ▄██       ██████        ▀██     ██     ██        ██             ▀██     ██     ███▀▀███   ██████ 
+#    ▄▄▄▄▄▄▄▄     ▄▄       ▄▄▄▄    ▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄      ▄▄▄▄    ▄▄▄▄▄▄▄▄ ▄▄      ▄▄    ▄▄
+#    ▀▀▀▀▀███    ████    ▄█▀▀▀▀█   ▀▀▀██▀▀▀  ██▀▀▀▀▀▀  ██▀▀▀▀█▄  ▄█▀▀▀▀█   ▀▀▀██▀▀▀ ██      ██   ████
+#        ██▀     ████    ██▄          ██     ██        ██    ██  ██▄          ██    ▀█▄ ██ ▄█▀   ████
+#      ▄██▀     ██  ██    ▀████▄      ██     ███████   ██████▀    ▀████▄      ██     ██ ██ ██   ██  ██
+#     ▄██       ██████        ▀██     ██     ██        ██             ▀██     ██     ███▀▀███   ██████
 #    ███▄▄▄▄▄  ▄██  ██▄  █▄▄▄▄▄█▀     ██     ██▄▄▄▄▄▄  ██        █▄▄▄▄▄█▀     ██     ███  ███  ▄██  ██▄
 #    ▀▀▀▀▀▀▀▀  ▀▀    ▀▀   ▀▀▀▀▀       ▀▀     ▀▀▀▀▀█▀▀  ▀▀         ▀▀▀▀▀       ▀▀     ▀▀▀  ▀▀▀  ▀▀    ▀▀
-#                                                █▄▄                                                   
+#                                                █▄▄
 #
 
 # Standardowe biblioteki
@@ -25,21 +25,38 @@ from helpers.helpers import (
 	ograniczWysyłanie
 )
 
-# Wysyła aktualizacje zastępstw
-async def wyślijAktualizacje(kanał, identyfikatorSerwera, informacjeDodatkowe, aktualneWpisyZastępstw, aktualnyCzas):
+async def wyślijAktualizacje(
+	kanał: discord.TextChannel,
+	identyfikatorSerwera: int,
+	informacjeDodatkowe: str,
+	aktualneWpisyZastępstw: list[tuple[str, list[str]]],
+	aktualnyCzas: str
+) -> None:
+	"""
+	Wysyła aktualizacje zastępstw do konkretnego kanału tekstowego Discord.
+
+	Args:
+		kanał (discord.TextChannel): Kanał tekstowy Discord, na który zostaną wysłane wiadomości.
+		identyfikatorSerwera (int): ID serwera Discord.
+		informacjeDodatkowe (str): Tekst informacji dodatkowych nad zastępstwami.
+		aktualneWpisyZastępstw (list[tuple[str, list[str]]]): Lista zastępstw.
+		aktualnyCzas (str): Aktualny czas, używany w stopce wiadomości.
+	"""
+
 	opisTylkoDlaInformacjiDodatkowych = (
 		"**Informacje dodatkowe zastępstw:**"
-		+ f"\n{informacjeDodatkowe}"
-		+ "\n\n**Informacja o tej wiadomości:**"
-		+ "\nTa wiadomość zawiera informacje dodatkowe umieszczone nad zastępstwami. Nie znaleziono dla Ciebie żadnych zastępstw pasujących do Twoich filtrów."
+		f"\n{informacjeDodatkowe}"
+		"\n\n**Informacja o tej wiadomości:**"
+		"\nTa wiadomość zawiera informacje dodatkowe umieszczone nad zastępstwami. Nie znaleziono dla Ciebie żadnych zastępstw pasujących do Twoich filtrów."
 	)
 	opisDlaInformacjiDodatkowych = (
 		"**Informacje dodatkowe zastępstw:**"
-		+ f"\n{informacjeDodatkowe}"
-		+ "\n\n**Informacja o tej wiadomości:**"
-		+ "\nTa wiadomość zawiera informacje dodatkowe umieszczone nad zastępstwami. Wszystkie zastępstwa znajdują się pod tą wiadomością."
+		f"\n{informacjeDodatkowe}"
+		"\n\n**Informacja o tej wiadomości:**"
+		"\nTa wiadomość zawiera informacje dodatkowe umieszczone nad zastępstwami. Wszystkie zastępstwa znajdują się pod tą wiadomością."
 	)
-	treśćStopkiInformacjiDodakowych = f"Czas aktualizacji: {aktualnyCzas}\n{Constants.KRÓTSZA_STOPKA}"
+	treśćStopkiInformacjiDodatkowych = f"Czas aktualizacji: {aktualnyCzas}\n{Constants.KRÓTSZA_STOPKA}"
+
 	try:
 		ostatniaWiadomość = None
 		if informacjeDodatkowe and not aktualneWpisyZastępstw:
@@ -48,7 +65,7 @@ async def wyślijAktualizacje(kanał, identyfikatorSerwera, informacjeDodatkowe,
 				description=opisTylkoDlaInformacjiDodatkowych,
 				color=Constants.KOLOR
 			)
-			embed.set_footer(text=treśćStopkiInformacjiDodakowych)
+			embed.set_footer(text=treśćStopkiInformacjiDodatkowych)
 			await ograniczWysyłanie(kanał, embed=embed)
 
 		elif (informacjeDodatkowe and aktualneWpisyZastępstw) or (aktualneWpisyZastępstw):
@@ -60,16 +77,19 @@ async def wyślijAktualizacje(kanał, identyfikatorSerwera, informacjeDodatkowe,
 				except Exception:
 					pass
 			else:
-				logiKonsoli.warning(f"Brak uprawnień do używania @everyone dla serwera o ID {identyfikatorSerwera}. Wzmianka została pominięta.")
+				logiKonsoli.warning(
+					f"Brak uprawnień do używania @everyone dla serwera o ID {identyfikatorSerwera}. Wzmianka została pominięta."
+				)
 
 			embed = discord.Embed(
 				title="**Zastępstwa zostały zaktualizowane!**",
 				description=opisDlaInformacjiDodatkowych,
 				color=Constants.KOLOR
 			)
-			embed.set_footer(text=treśćStopkiInformacjiDodakowych)
+			embed.set_footer(text=treśćStopkiInformacjiDodatkowych)
 			await ograniczWysyłanie(kanał, embed=embed)
 
+			tytuł = ""
 			for tytuł, wpisyZastępstw in aktualneWpisyZastępstw:
 				if "Zastępstwa z nieprzypisanymi klasami!" in tytuł:
 					tekstZastępstw = (
@@ -85,15 +105,22 @@ async def wyślijAktualizacje(kanał, identyfikatorSerwera, informacjeDodatkowe,
 					description=tekstZastępstw,
 					color=Constants.KOLOR
 				)
+
 				if not "Zastępstwa z nieprzypisanymi klasami!" in tytuł:
 					embed.set_footer(text="Każdy nauczyciel, którego dotyczą zastępstwa pasujące do Twoich filtrów, zostanie załączany w oddzielnej wiadomości.")
 				else:
 					embed.set_footer(text="Każdy nauczyciel, którego dotyczą zastępstwa bez dołączonej klasy, został załączony w tej wiadomości.")
+
 				ostatniaWiadomość = await ograniczWysyłanie(kanał, embed=embed)
 
 		if ostatniaWiadomość and not "Zastępstwa z nieprzypisanymi klasami!" in tytuł:
 			await ograniczReagowanie(ostatniaWiadomość, "❤️")
+
 	except discord.DiscordException as e:
-		logiKonsoli.exception(f"Wystąpił błąd podczas wysyłania wiadomości do serwera o ID {identyfikatorSerwera}. Więcej informacji: {e}")
+		logiKonsoli.exception(
+			f"Wystąpił błąd podczas wysyłania wiadomości do serwera o ID {identyfikatorSerwera}. Więcej informacji: {e}"
+		)
 	except Exception as e:
-		logiKonsoli.exception(f"Wystąpił nieoczekiwany błąd podczas wysyłania wiadomości do serwera o ID {identyfikatorSerwera}. Więcej informacji: {e}")
+		logiKonsoli.exception(
+			f"Wystąpił nieoczekiwany błąd podczas wysyłania wiadomości do serwera o ID {identyfikatorSerwera}. Więcej informacji: {e}"
+		)
