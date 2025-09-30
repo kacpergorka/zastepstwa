@@ -18,10 +18,10 @@ import re
 import discord
 
 # Wewnętrzne importy
-from classes.constants import Constants
-from handlers.configuration import konfiguracja
-from handlers.logging import logiKonsoli
-from helpers.helpers import (
+from src.classes.constants import Constants
+from src.handlers.configuration import konfiguracja
+from src.handlers.logging import logiKonsoli
+from src.helpers.helpers import (
 	dopasujWpisyDoListy,
 	pobierzListęKlas,
 	pobierzSłownikSerwera,

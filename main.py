@@ -20,9 +20,9 @@ import sys
 import discord
 
 # Wewnętrzne importy
-from classes.zastepstwa import bot
-from handlers.configuration import konfiguracja
-from handlers.logging import logiKonsoli
+from src.classes.zastepstwa import bot
+from src.handlers.configuration import konfiguracja
+from src.handlers.logging import logiKonsoli
 
 def wyłączBota(*_):
 	"""
@@ -32,10 +32,10 @@ def wyłączBota(*_):
 		*_: Dowolne argumenty przekazywane automatycznie przez sygnał systemowy.
 	"""
 
-	bot.loop.call_soon_threadsafe(lambda: asyncio.create_task(bot.close()))
 	logiKonsoli.info(
 		"Przechwycono Ctrl+C. Trwa zatrzymywanie bota..."
 	)
+	bot.loop.call_soon_threadsafe(lambda: asyncio.create_task(bot.close()))
 
 signal.signal(signal.SIGINT, wyłączBota)
 

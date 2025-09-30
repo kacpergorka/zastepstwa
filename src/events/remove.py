@@ -16,13 +16,13 @@ import copy
 import discord
 
 # Wewnętrzne importy
-from handlers.configuration import (
+from src.handlers.configuration import (
 	blokadaKonfiguracji,
 	konfiguracja,
 	zapiszKonfiguracje
 )
-from handlers.data import folderDanych
-from handlers.logging import logiKonsoli
+from src.handlers.data import folderDanych
+from src.handlers.logging import logiKonsoli
 
 def ustaw(bot: discord.Client) -> None:
 	"""

@@ -14,9 +14,9 @@
 import discord
 
 # Wewnętrzne importy
-from classes.constants import Constants
-from handlers.logging import logiKonsoli
-from helpers.helpers import ograniczWysyłanie
+from src.classes.constants import Constants
+from src.handlers.logging import logiKonsoli
+from src.helpers.helpers import ograniczWysyłanie
 
 def ustaw(bot: discord.Client) -> None:
 	"""

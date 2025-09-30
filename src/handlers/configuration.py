@@ -19,7 +19,7 @@ from pathlib import Path
 from typing import Any
 
 # Wewnętrzne importy
-from handlers.logging import logiKonsoli
+from src.handlers.logging import logiKonsoli
 
 # Globalna blokada modyfikacji pliku konfiguracyjnego
 blokadaKonfiguracji = asyncio.Lock()

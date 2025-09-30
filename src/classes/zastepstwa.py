@@ -21,20 +21,20 @@ import discord
 import pytz
 
 # Wewnętrzne importy
-from assets.ascii import ascii
-from commands import (
+from src.assets.ascii import ascii
+from src.commands import (
 	informacje,
 	skonfiguruj,
 	statystyki
 )
-from events import (
+from src.events import (
 	join,
 	remove
 )
-from handlers.configuration import konfiguracja
-from handlers.logging import logiKonsoli
-from tasks.statistics import sprawdźKoniecRoku
-from tasks.updates import sprawdźAktualizacje
+from src.handlers.configuration import konfiguracja
+from src.handlers.logging import logiKonsoli
+from src.tasks.statistics import sprawdźKoniecRoku
+from src.tasks.updates import sprawdźAktualizacje
 
 class Zastępstwa(discord.Client):
 	"""

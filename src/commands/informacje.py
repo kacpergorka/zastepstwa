@@ -17,84 +17,79 @@ import contextlib
 import discord
 
 # Wewnętrzne importy
-from classes.commands import WidokGłówny
-from classes.constants import Constants
-from handlers.configuration import konfiguracja
-from handlers.logging import (
+from src.classes.constants import Constants
+from src.handlers.configuration import konfiguracja
+from src.handlers.logging import (
 	logiKonsoli,
 	logujPolecenia
+)
+from src.helpers.helpers import (
+	pobierzCzasDziałania,
+	pobierzLiczbęSerwerów
 )
 
 def ustaw(bot: discord.Client) -> None:
 	"""
-	Rejestruje polecenie `/skonfiguruj` w drzewie bota.
+	Rejestruje polecenie `/informacje` w drzewie bota.
 
 	Args:
 		bot (discord.Client): Instancja klienta Discord, do której dodawane jest polecenie.
 	"""
 
 	@bot.tree.command(
-		name="skonfiguruj",
-		description="Skonfiguruj bota, wybierając szkołę, docelowy kanał tekstowy i filtry zastępstw."
-	)
-	@discord.app_commands.describe(
-		kanał="Kanał tekstowy, na który będą wysyłane powiadomienia z zastępstwami.",
-		szkoła="Szkoła, z której to strony będą pobierane informacje o zastępstwach."
-	)
-	@discord.app_commands.guild_only()
-	@discord.app_commands.choices(
-		szkoła=[
-			discord.app_commands.Choice(
-				name=nazwaSzkoły.get("nazwa", identyfikatorSzkoły),
-				value=str(identyfikatorSzkoły)
-			)
-			for identyfikatorSzkoły, nazwaSzkoły in konfiguracja.get("szkoły", {}).items()
-		]
+		name="informacje",
+		description="Wyświetl najważniejsze informacje dotyczące bota, jego oprogramowania i administratorów"
 	)
 
-	async def skonfiguruj(
-		interaction: discord.Interaction,
-		szkoła: str,
-		kanał: discord.TextChannel
-	) -> None:
+	async def informacje(interaction: discord.Interaction) -> None:
 		"""
-		Pozwala skonfigurować bota, dzięki opcjom wyboru szkoły, docelowego kanału tekstowego i filtracji zastępstw.
+		Wyświetla najważniejsze informacje dotyczące bota, jego oprogramowania i administratorów.
 
 		Args:
 			interaction (discord.Interaction): Obiekt interakcji wywołujący polecenie.
 		"""
 
 		try:
-			if not interaction.user.guild_permissions.administrator:
-				embed = discord.Embed(
-					title="**Polecenie nie zostało wykonane!**",
-					description="Nie masz uprawnień do użycia tego polecenia. Może ono zostać użyte wyłącznie przez administratora serwera.",
-					color=Constants.KOLOR
-				)
-				embed.set_footer(text=Constants.KRÓTSZA_STOPKA)
-				await interaction.response.send_message(embed=embed, ephemeral=True)
-				logujPolecenia(interaction, sukces=False, wiadomośćBłędu="Brak uprawnień.")
-				return
-
-			view = WidokGłówny(identyfikatorKanału=str(kanał.id), szkoła=szkoła)
 			embed = discord.Embed(
-				title="**Skonfiguruj filtrowanie zastępstw**",
-				description=(
-					"**Jesteś uczniem?**"
-					"\nAby dostawać powiadomienia z nowymi zastępstwami przypisanymi Twojej klasie, naciśnij przycisk **Uczeń**."
-					"\n\n**Jesteś nauczycielem?**"
-					"\nAby dostawać powiadomienia z nowymi zastępstwami przypisanymi Tobie, naciśnij przycisk **Nauczyciel**."
-					"\n\nAby wyczyścić wszystkie ustawione filtry, naciśnij przycisk **Wyczyść filtry**."
-				),
+				title="**Informacje dotyczące bota**",
+				description="Otwartoźródłowe oprogramowanie informujące o aktualizacjach zastępstw. W celu skontaktowania się z jednym z administratorów bota, naciśnij jednego z poniżej widniejących. Nastąpi przekierowanie na zewnętrzną stronę internetową.",
 				color=Constants.KOLOR
 			)
+			embed.add_field(
+				name="Wersja bota:",
+				value=konfiguracja.get("wersja", "Brak danych")
+			)
+			embed.add_field(
+				name="Repozytorium GitHuba:",
+				value=("[kacpergorka/zastepstwa](https://github.com/kacpergorka/zastepstwa)")
+			)
+			embed.add_field(
+				name="Administratorzy bota:",
+				value="[Kacper Górka](https://kacpergorka.com/)"
+			)
+
+			if pobierzLiczbęSerwerów(bot) == 1:
+				embed.add_field(
+					name="Liczba serwerów:",
+					value=(f"Bot znajduje się na **{pobierzLiczbęSerwerów(bot)}** serwerze.")
+				)
+			else:
+				embed.add_field(
+					name="Liczba serwerów:",
+					value=(f"Bot znajduje się na **{pobierzLiczbęSerwerów(bot)}** serwerach.")
+				)
+
+			embed.add_field(
+				name="Bot pracuje bez przerwy przez:",
+				value=pobierzCzasDziałania(bot)
+			)
 			embed.set_footer(text=Constants.DŁUŻSZA_STOPKA)
-			await interaction.response.send_message(embed=embed, view=view)
+			await interaction.response.send_message(embed=embed)
 			logujPolecenia(interaction, sukces=True)
 		except Exception as e:
 			logujPolecenia(interaction, sukces=False, wiadomośćBłędu=str(e))
 			logiKonsoli.exception(
-				f"Wystąpił błąd podczas wywołania polecenia „/skonfiguruj”. Więcej informacji: {e}"
+				f"Wystąpił błąd podczas wywołania polecenia „/informacje”. Więcej informacji: {e}"
 			)
 			with contextlib.suppress(Exception):
 				await interaction.followup.send(

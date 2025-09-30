@@ -20,7 +20,7 @@ from pathlib import Path
 from typing import Any
 
 # Wewnętrzne importy
-from handlers.logging import logiKonsoli
+from src.handlers.logging import logiKonsoli
 
 # Ścieżka folderu z plikami danych
 folderDanych = Path("resources")

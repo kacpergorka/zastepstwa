@@ -20,7 +20,7 @@ from bs4 import BeautifulSoup
 import discord
 
 # Wewnętrzne importy
-from handlers.logging import logiKonsoli
+from src.handlers.logging import logiKonsoli
 
 async def pobierzZawartośćStrony(
 	bot: discord.Client,

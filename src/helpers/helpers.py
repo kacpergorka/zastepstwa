@@ -26,7 +26,7 @@ import discord
 import pytz
 
 # Wewnętrzne importy
-from handlers.configuration import (
+from src.handlers.configuration import (
 	blokadaKonfiguracji,
 	konfiguracja,
 	zapiszKonfiguracje

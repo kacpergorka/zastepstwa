@@ -19,16 +19,16 @@ import discord
 import pytz
 
 # Wewnętrzne importy
-from handlers.configuration import (
+from src.handlers.configuration import (
 	blokadaKonfiguracji,
 	konfiguracja
 )
-from handlers.data import zarządzajPlikiemDanych
-from handlers.logging import logiKonsoli
-from handlers.notifications import wyślijAktualizacje
-from handlers.parser import wyodrębnijDane
-from handlers.scraper import pobierzZawartośćStrony
-from helpers.helpers import (
+from src.handlers.data import zarządzajPlikiemDanych
+from src.handlers.logging import logiKonsoli
+from src.handlers.notifications import wyślijAktualizacje
+from src.handlers.parser import wyodrębnijDane
+from src.handlers.scraper import pobierzZawartośćStrony
+from src.helpers.helpers import (
 	blokadaNaSerwer,
 	obliczSumęKontrolną,
 	pobierzListęKlas,

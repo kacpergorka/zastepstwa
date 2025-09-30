@@ -19,14 +19,14 @@ import discord
 import pytz
 
 # Wewnętrzne importy
-from classes.constants import Constants
-from handlers.configuration import (
+from src.classes.constants import Constants
+from src.handlers.configuration import (
 	blokadaKonfiguracji,
 	konfiguracja
 )
-from handlers.data import zarządzajPlikiemDanych
-from handlers.logging import logiKonsoli
-from helpers.helpers import (
+from src.handlers.data import zarządzajPlikiemDanych
+from src.handlers.logging import logiKonsoli
+from src.helpers.helpers import (
 	blokadaNaSerwer,
 	odmieńZastępstwa,
 	ograniczUsuwanie,

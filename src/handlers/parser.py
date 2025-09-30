@@ -26,8 +26,8 @@ from bs4 import (
 )
 
 # Wewnętrzne importy
-from handlers.logging import logiKonsoli
-from helpers.helpers import (
+from src.handlers.logging import logiKonsoli
+from src.helpers.helpers import (
 	normalizujTekst,
 	zwróćNazwyKluczy
 )

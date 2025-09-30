@@ -20,7 +20,7 @@ from typing import Optional
 import discord
 
 # Wewnętrzne importy
-from classes.timezone import Timezone
+from src.classes.timezone import Timezone
 
 def skonfigurujLogi() -> tuple[logging.Logger, logging.Logger]:
 	"""

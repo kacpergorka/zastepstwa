@@ -17,17 +17,17 @@ import contextlib
 import discord
 
 # Wewnętrzne importy
-from classes.constants import Constants
-from handlers.configuration import (
+from src.classes.constants import Constants
+from src.handlers.configuration import (
 	blokadaKonfiguracji,
 	konfiguracja
 )
-from handlers.data import zarządzajPlikiemDanych
-from handlers.logging import (
+from src.handlers.data import zarządzajPlikiemDanych
+from src.handlers.logging import (
 	logiKonsoli,
 	logujPolecenia
 )
-from helpers.helpers import (
+from src.helpers.helpers import (
 	odmieńZastępstwa,
 	zwróćNazwyKluczy
 )

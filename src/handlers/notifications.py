@@ -17,9 +17,9 @@ import asyncio
 import discord
 
 # Wewnętrzne importy
-from classes.constants import Constants
-from handlers.logging import logiKonsoli
-from helpers.helpers import (
+from src.classes.constants import Constants
+from src.handlers.logging import logiKonsoli
+from src.helpers.helpers import (
 	ograniczReagowanie,
 	ograniczUsuwanie,
 	ograniczWysyłanie
