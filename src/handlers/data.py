@@ -23,7 +23,7 @@ from typing import Any
 from src.handlers.logging import logiKonsoli
 
 # Ścieżka folderu z plikami danych
-folderDanych = Path("resources")
+folderDanych = Path("data")
 folderDanych.mkdir(exist_ok=True)
 
 # Globalna blokada modyfikacji pliku danych per serwer
