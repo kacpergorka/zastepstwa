@@ -13,10 +13,10 @@
 # Standardowe biblioteki
 import asyncio
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 # Zewnętrzne biblioteki
 import discord
-import pytz
 
 # Wewnętrzne importy
 from src.classes.constants import Constants
@@ -75,8 +75,8 @@ async def sprawdźKoniecRoku(bot: discord.Client) -> None:
 			if len(dataZakończeniaRoku) == 10:
 				daneCzasu = daneCzasu.replace(hour=0, minute=0, second=0)
 
-			koniecRoku = pytz.timezone("Europe/Warsaw").localize(daneCzasu)
-			aktualnyCzas = datetime.now(pytz.timezone("Europe/Warsaw"))
+			koniecRoku = daneCzasu.replace(tzinfo=ZoneInfo("Europe/Warsaw"))
+			aktualnyCzas = datetime.now(ZoneInfo("Europe/Warsaw"))
 
 			if aktualnyCzas >= koniecRoku:
 				for identyfikatorSerwera in serwery:
@@ -143,7 +143,7 @@ async def sprawdźKoniecRoku(bot: discord.Client) -> None:
 
 							if isinstance(statystyki, dict) and statystyki:
 								sortowanie = sorted(statystyki.items(), key=lambda x: (-int(x[1]), x[0]))
-								wolneMiejsca = 24 - len(embed.fields)
+								wolneMiejsca = 25 - len(embed.fields)
 
 								if wolneMiejsca > 0:
 									for nauczyciel, liczba in sortowanie[:wolneMiejsca]:
@@ -176,7 +176,7 @@ async def sprawdźKoniecRoku(bot: discord.Client) -> None:
 
 							if pozostali:
 								sortowanie = sorted(pozostali.items(), key=lambda x: (-int(x[1]), x[0]))
-								wolneMiejsca = 24 - len(embed.fields)
+								wolneMiejsca = 25 - len(embed.fields)
 
 								if wolneMiejsca > 0:
 									for nauczyciel, liczba in sortowanie[:wolneMiejsca]:

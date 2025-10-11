@@ -14,7 +14,6 @@
 import asyncio
 from collections import defaultdict
 import copy
-from datetime import datetime
 import difflib
 import hashlib
 import re
@@ -23,7 +22,6 @@ import unicodedata
 
 # Zewnętrzne biblioteki
 import discord
-import pytz
 
 # Wewnętrzne importy
 from src.handlers.configuration import (
@@ -118,6 +116,29 @@ def obliczSumęKontrolną(dane: Any) -> str:
 		wejście = str(dane)
 
 	return hashlib.sha256(wejście.encode("utf-8")).hexdigest()
+
+
+def odmieńZastępstwa(licznik: int) -> str:
+	"""
+	Odmienia słowo „zastępstwo” w zależności od liczby zastępstw.
+
+	Args:
+		licznik (int): Liczba zastępstw.
+
+	Returns:
+		str: Poprawna forma słowa „zastępstwo” dopasowana do liczby.
+	"""
+
+	if abs(licznik) == 1:
+		return "zastępstwo"
+
+	if 11 <= abs(licznik) % 100 <= 14:
+		return "zastępstw"
+
+	if abs(licznik) % 10 in (2, 3, 4):
+		return "zastępstwa"
+
+	return "zastępstw"
 
 
 def normalizujTekst(tekst: str) -> str:
@@ -288,7 +309,7 @@ async def zapiszKluczeSerwera(
 		konfiguracja["serwery"] = serwery
 		snapshot = copy.deepcopy(konfiguracja)
 
-	await zapiszKonfiguracje(snapshot)
+		await zapiszKonfiguracje(snapshot)
 
 
 async def wyczyśćFiltry(identyfikatorSerwera: str) -> None:
@@ -309,7 +330,7 @@ async def wyczyśćFiltry(identyfikatorSerwera: str) -> None:
 		daneSerwera["wybrani-nauczyciele"] = []
 		snapshot = copy.deepcopy(konfiguracja)
 
-	await zapiszKonfiguracje(snapshot)
+		await zapiszKonfiguracje(snapshot)
 
 
 def dopasujWpisyDoListy(
@@ -431,79 +452,3 @@ def pobierzListęKlas(szkoła: str | None=None) -> list[str]:
 		return suroweDane
 
 	return []
-
-
-def policzZastępstwa(aktualneWpisyZastępstw: list[tuple[str, list[str]]]) -> int:
-	"""
-	Oblicza łączną liczbę zastępstw w podanej strukturze danych.
-
-	Args:
-		aktualneWpisyZastępstw (list[tuple[str, list[str]]]): Wpisy zastępstw sortowane według nauczyciela
-
-	Returns:
-		int: Suma wszystkich wpisów zastępstw. Zwraca 0, jeśli lista jest pusta lub niepoprawna.
-	"""
-
-	if not aktualneWpisyZastępstw:
-		return 0
-
-	try:
-		return sum(len(wpisy) for _, wpisy in aktualneWpisyZastępstw)
-	except Exception:
-		return 0
-
-
-def odmieńZastępstwa(licznik: int) -> str:
-	"""
-	Odmienia słowo „zastępstwo” w zależności od liczby zastępstw.
-
-	Args:
-		licznik (int): Liczba zastępstw.
-
-	Returns:
-		str: Poprawna forma słowa „zastępstwo” dopasowana do liczby.
-	"""
-
-	if abs(licznik) == 1:
-		return "zastępstwo"
-
-	if 11 <= abs(licznik) % 100 <= 14:
-		return "zastępstw"
-
-	if abs(licznik) % 10 in (2, 3, 4):
-		return "zastępstwa"
-
-	return "zastępstw"
-
-
-def pobierzLiczbęSerwerów(bot: discord.Client) -> int:
-	"""
-	Pobiera liczbę serwerów, na których znajduje się bot.
-
-	Args:
-		bot (discord.Client): Instancja klienta Discord.
-
-	Returns:
-		int: Liczba serwerów, na których znajduje się bot.
-	"""
-
-	return len(bot.guilds)
-
-
-def pobierzCzasDziałania(bot: discord.Client) -> str:
-	"""
-	Oblicza czas działania bota od momentu jego uruchomienia.
-
-	Args:
-		bot (discord.Client): Instancja klienta Discord.
-
-	Returns:
-		str: Sformatowany ciąg tekstowy z czasem działania w dniach, godzinach, minutach i sekundach.
-	"""
-
-	czasDziałania = datetime.now(pytz.timezone("Europe/Warsaw")) - bot.zaczynaCzas
-	dni, reszta = divmod(czasDziałania.total_seconds(), 86400)
-	godziny, reszta = divmod(reszta, 3600)
-	minuty, sekundy = divmod(reszta, 60)
-
-	return f"**{int(dni)}** dni, **{int(godziny)}** godz., **{int(minuty)}** min. i **{int(sekundy)}** sek."

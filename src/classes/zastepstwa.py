@@ -14,11 +14,11 @@
 import asyncio
 import contextlib
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 # Zewnętrzne biblioteki
 import aiohttp
 import discord
-import pytz
 
 # Wewnętrzne importy
 from src.assets.ascii import ascii
@@ -102,6 +102,8 @@ class Zastępstwa(discord.Client):
 				logiKonsoli.exception(
 					f"Wystąpił błąd podczas zamykania sesji HTTP. Więcej informacji: {e}"
 				)
+			finally:
+				self.połączenieHTTP = None
 
 		await super().close()
 
@@ -111,7 +113,7 @@ class Zastępstwa(discord.Client):
 		"""
 
 		try:
-			self.zaczynaCzas = datetime.now(pytz.timezone("Europe/Warsaw"))
+			self.czas = datetime.now(ZoneInfo("Europe/Warsaw"))
 			logiKonsoli.info(ascii)
 			logiKonsoli.info(
 				f"Zalogowano jako {self.user.name} (ID: {self.user.id}). Czekaj..."

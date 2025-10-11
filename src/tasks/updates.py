@@ -13,10 +13,10 @@
 # Standardowe biblioteki
 import asyncio
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 # Zewnętrzne biblioteki
 import discord
-import pytz
 
 # Wewnętrzne importy
 from src.handlers.configuration import (
@@ -31,8 +31,7 @@ from src.handlers.scraper import pobierzZawartośćStrony
 from src.helpers.helpers import (
 	blokadaNaSerwer,
 	obliczSumęKontrolną,
-	pobierzListęKlas,
-	policzZastępstwa
+	pobierzListęKlas
 )
 
 async def sprawdźAktualizacje(bot: discord.Client) -> None:
@@ -143,7 +142,7 @@ async def sprawdźSerwery(
 				)
 
 			try:
-				aktualnyCzas = datetime.now(pytz.timezone("Europe/Warsaw")).strftime("%d-%m-%Y %H:%M:%S")
+				aktualnyCzas = datetime.now(ZoneInfo("Europe/Warsaw")).strftime("%d-%m-%Y %H:%M:%S")
 
 				if sumaKontrolnaAktualnychInformacjiDodatkowych != sumaKontrolnaPoprzednichInformacjiDodatkowych and sumaKontrolnaAktualnychWpisówZastępstw == sumaKontrolnaPoprzednichWpisówZastępstw:
 					await wyślijAktualizacje(kanał, identyfikatorSerwera, informacjeDodatkowe, None, aktualnyCzas)
@@ -157,7 +156,7 @@ async def sprawdźSerwery(
 				poprzedniLicznik = int(poprzednieDane.get("licznik-zastepstw", 0))
 
 				if sumaKontrolnaAktualnychWpisówZastępstw != sumaKontrolnaPoprzednichWpisówZastępstw:
-					przyrost = policzZastępstwa(aktualneWpisyZastępstw) if aktualneWpisyZastępstw else 0
+					przyrost = sum(len(wpisy) for _, wpisy in aktualneWpisyZastępstw) if aktualneWpisyZastępstw else 0
 					nowyLicznik = poprzedniLicznik + przyrost
 					statystykiNauczycieli = poprzednieDane.get("statystyki-nauczycieli", {})
 

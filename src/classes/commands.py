@@ -119,7 +119,7 @@ class WidokPonownegoWprowadzania(discord.ui.View):
 			await interaction.response.send_modal(ModalWybierania(self.typDanych, self.lista, self.wiadomość, self.identyfikatorKanału, self.szkoła))
 		except Exception as e:
 			logiKonsoli.exception(
-				f"Wystąpił błąd po naciśnięciu przycisku „Wprowadź ponownie” (w class WidokPonownegoWprowadzania) dla użytkownika {interaction.user} (ID: {interaction.user.id}) na serwerze „{interaction.guild}” (ID: {interaction.id}). Więcej informacji: {e}"
+				f"Wystąpił błąd po naciśnięciu przycisku „Wprowadź ponownie” (w class WidokPonownegoWprowadzania) dla użytkownika {interaction.user} (ID: {interaction.user.id}) na serwerze „{interaction.guild}” (ID: {interaction.guild.id}). Więcej informacji: {e}"
 			)
 			with contextlib.suppress(Exception):
 				await interaction.followup.send(
@@ -196,7 +196,7 @@ class WidokAkceptacjiSugestii(discord.ui.View):
 			await zapiszKluczeSerwera(self.identyfikatorSerwera, {"identyfikator-kanalu": self.identyfikatorKanału, "szkoła": self.szkoła, kluczFiltru: finalne})
 		except Exception as e:
 			logiKonsoli.exception(
-				f"Wystąpił błąd po naciśnięciu przycisku „Akceptuj sugestie” dla użytkownika {interaction.user} (ID: {interaction.user.id}) na serwerze „{interaction.guild}” (ID: {interaction.id}). Więcej informacji: {e}"
+				f"Wystąpił błąd po naciśnięciu przycisku „Akceptuj sugestie” dla użytkownika {interaction.user} (ID: {interaction.user.id}) na serwerze „{interaction.guild}” (ID: {interaction.guild.id}). Więcej informacji: {e}"
 			)
 			with contextlib.suppress(Exception):
 				await interaction.followup.send(
@@ -221,7 +221,7 @@ class WidokAkceptacjiSugestii(discord.ui.View):
 			await interaction.response.send_modal(ModalWybierania(self.typDanych, self.lista, self.wiadomość, self.identyfikatorKanału, self.szkoła))
 		except Exception as e:
 			logiKonsoli.exception(
-				f"Wystąpił błąd po naciśnięciu przycisku „Wprowadź ponownie” (w class WidokAkceptacjiSugestii) dla użytkownika {interaction.user} (ID: {interaction.user.id}) na serwerze „{interaction.guild}” (ID: {interaction.id}). Więcej informacji: {e}"
+				f"Wystąpił błąd po naciśnięciu przycisku „Wprowadź ponownie” (w class WidokAkceptacjiSugestii) dla użytkownika {interaction.user} (ID: {interaction.user.id}) na serwerze „{interaction.guild}” (ID: {interaction.guild.id}). Więcej informacji: {e}"
 			)
 			with contextlib.suppress(Exception):
 				await interaction.followup.send(
@@ -330,7 +330,7 @@ class ModalWybierania(discord.ui.Modal):
 			await self.wiadomość.edit(embed=embed, view=None)
 		except Exception as e:
 			logiKonsoli.exception(
-				f"Wystąpił błąd po naciśnięciu przycisku wysyłającego dane do zapisu (on_submit) dla użytkownika {interaction.user} (ID: {interaction.user.id}) na serwerze „{interaction.guild}” (ID: {interaction.id}). Więcej informacji: {e}"
+				f"Wystąpił błąd po naciśnięciu przycisku wysyłającego dane do zapisu (on_submit) dla użytkownika {interaction.user} (ID: {interaction.user.id}) na serwerze „{interaction.guild}” (ID: {interaction.guild.id}). Więcej informacji: {e}"
 			)
 			with contextlib.suppress(Exception):
 				await interaction.response.send_message(
@@ -365,7 +365,7 @@ class PrzyciskUczeń(discord.ui.Button):
 		interaction: discord.Interaction
 	) -> None:
 		listaKlas = pobierzListęKlas(self.szkoła)
-		if listaKlas == []:
+		if not listaKlas:
 			embed = discord.Embed(
 				title="**Opcja niedostępna!**",
 				description="Ta opcja nie jest dostępna w Twojej szkole. W razie pytań skontaktuj się z administratorem bota.",
@@ -378,7 +378,7 @@ class PrzyciskUczeń(discord.ui.Button):
 				await interaction.response.send_modal(ModalWybierania("klasy", listaKlas, interaction.message, self.identyfikatorKanału, self.szkoła))
 			except Exception as e:
 				logiKonsoli.exception(
-					f"Wystąpił błąd po naciśnięciu przycisku „Uczeń” dla użytkownika {interaction.user} (ID: {interaction.user.id}) na serwerze „{interaction.guild}” (ID: {interaction.id}). Więcej informacji: {e}"
+					f"Wystąpił błąd po naciśnięciu przycisku „Uczeń” dla użytkownika {interaction.user} (ID: {interaction.user.id}) na serwerze „{interaction.guild}” (ID: {interaction.guild.id}). Więcej informacji: {e}"
 				)
 				with contextlib.suppress(Exception):
 					await interaction.followup.send(
@@ -413,7 +413,7 @@ class PrzyciskNauczyciel(discord.ui.Button):
 		interaction: discord.Interaction
 	) -> None:
 		listaNauczycieli = konfiguracja.get("szkoły", {}).get(self.szkoła, {}).get("lista-nauczycieli", [])
-		if listaNauczycieli == []:
+		if not listaNauczycieli:
 			embed = discord.Embed(
 				title="**Opcja niedostępna!**",
 				description="Ta opcja nie jest dostępna w Twojej szkole. W razie pytań skontaktuj się z administratorem bota.",
@@ -426,7 +426,7 @@ class PrzyciskNauczyciel(discord.ui.Button):
 				await interaction.response.send_modal(ModalWybierania("nauczyciele", listaNauczycieli, interaction.message, self.identyfikatorKanału, self.szkoła))
 			except Exception as e:
 				logiKonsoli.exception(
-					f"Wystąpił błąd po naciśnięciu przycisku „Nauczyciel” dla użytkownika {interaction.user} (ID: {interaction.user.id}) na serwerze „{interaction.guild}” (ID: {interaction.id}). Więcej informacji: {e}"
+					f"Wystąpił błąd po naciśnięciu przycisku „Nauczyciel” dla użytkownika {interaction.user} (ID: {interaction.user.id}) na serwerze „{interaction.guild}” (ID: {interaction.guild.id}). Więcej informacji: {e}"
 				)
 				with contextlib.suppress(Exception):
 					await interaction.followup.send(
@@ -463,7 +463,7 @@ class PrzyciskWyczyśćFiltry(discord.ui.Button):
 			await interaction.response.edit_message(embed=embed, view=None)
 		except Exception as e:
 			logiKonsoli.exception(
-				f"Wystąpił błąd po naciśnięciu przycisku „Wyczyść filtry” dla użytkownika {interaction.user} (ID: {interaction.user.id}) na serwerze „{interaction.guild}” (ID: {interaction.id}). Więcej informacji: {e}"
+				f"Wystąpił błąd po naciśnięciu przycisku „Wyczyść filtry” dla użytkownika {interaction.user} (ID: {interaction.user.id}) na serwerze „{interaction.guild}” (ID: {interaction.guild.id}). Więcej informacji: {e}"
 			)
 			with contextlib.suppress(Exception):
 				await interaction.followup.send(

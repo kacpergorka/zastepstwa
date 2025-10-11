@@ -92,7 +92,7 @@ def ustaw(bot: discord.Client) -> None:
 
 				if isinstance(statystyki, dict) and statystyki:
 					sortowanie = sorted(statystyki.items(), key=lambda x: (-int(x[1]), x[0]))
-					wolneMiejsca = 24 - len(embed.fields)
+					wolneMiejsca = 25 - len(embed.fields)
 
 					if wolneMiejsca > 0:
 						for nauczyciel, liczba in sortowanie[:wolneMiejsca]:
@@ -127,7 +127,7 @@ def ustaw(bot: discord.Client) -> None:
 
 				if pozostali:
 					sortowanie = sorted(pozostali.items(), key=lambda x: (-int(x[1]), x[0]))
-					wolneMiejsca = 24 - len(embed.fields)
+					wolneMiejsca = 25 - len(embed.fields)
 
 					if wolneMiejsca > 0:
 						for nauczyciel, liczba in sortowanie[:wolneMiejsca]:
@@ -161,10 +161,16 @@ def ustaw(bot: discord.Client) -> None:
 		except Exception as e:
 			logujPolecenia(interaction, sukces=False, wiadomośćBłędu=str(e))
 			logiKonsoli.exception(
-				f"Wystąpił błąd podczas wywołania polecenia „/statystyki”: {e}"
+				f"Wystąpił błąd podczas wywołania polecenia „/statystyki”. Więcej informacji: {e}"
 			)
 			with contextlib.suppress(Exception):
-				await interaction.followup.send(
-					"Wystąpił błąd. Spróbuj ponownie lub skontaktuj się z administratorem bota.",
-					ephemeral=True
-				)
+					if not interaction.response.is_done():
+						await interaction.response.send_message(
+							"Wystąpił błąd. Spróbuj ponownie lub skontaktuj się z administratorem bota.",
+							ephemeral=True
+						)
+					else:
+						await interaction.followup.send(
+							"Wystąpił błąd. Spróbuj ponownie lub skontaktuj się z administratorem bota.",
+							ephemeral=True
+						)

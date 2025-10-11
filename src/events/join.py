@@ -35,13 +35,13 @@ def ustaw(bot: discord.Client) -> None:
 			guild (discord.Guild): Serwer Discord, na który bot został dodany.
 		"""
 
-		dostarczoneWiadomości = 0
+		dostarczono = False
 		dalszaCzęśćOpisu = (
 			"Wszystkie ważne informacje dotyczące bota oraz jego administratorów znajdziesz, używając polecenia `/informacje`."
 			"\n\n**Konfiguracja bota**"
 			"\nKonfiguracja bota zaczyna się od utworzenia dedykowanego kanału tekstowego, na który po konfiguracji będą wysyłane zastępstwa, a następnie użycia polecenia `/skonfiguruj`, gdzie przejdziesz przez wygodny i intuicyjny konfigurator."
 			"\n\n**Utrzymanie bota**"
-			"\nJeśli napotkasz jakikolwiek błąd lub chcesz zgłosić swoją propozycję, [utwórz zgłoszenie w zakładce Issues](https://github.com/kacpergorka/zastepstwa/issues). Jest to bardzo ważne dla prawidłowego funkcjonowania bota!"
+			"\nJeśli napotkasz jakikolwiek błąd lub chcesz zgłosić swoją propozycję, [utwórz zgłoszenie w zakładce `Issues`](https://github.com/kacpergorka/zastepstwa/issues). Jest to bardzo ważne dla prawidłowego funkcjonowania bota!"
 		)
 
 		try:
@@ -60,14 +60,14 @@ def ustaw(bot: discord.Client) -> None:
 					embed.set_footer(text=Constants.DŁUŻSZA_STOPKA)
 					await dodający.send(embed=embed)
 
-					dostarczoneWiadomości += 1
+					dostarczono = True
 					logiKonsoli.info(
 						f"Wiadomość z instrukcjami została wysłana do {dodający.name} o ID {dodający.id}, który dodał bota na serwer {guild.name} o ID {guild.id}."
 					)
 					return
 				except discord.Forbidden as e:
 					logiKonsoli.warning(
-						f"Nie można wysłać wiadomości do {dodający.name} o ID {dodający.id}, który dodał bota na serwer {guild.name} o ID {guild.id}. Więcej informacji: {e}"
+						f"Nie można wysłać wiadomości z instrukcjami do {dodający.name} o ID {dodający.id}, który dodał bota na serwer {guild.name} o ID {guild.id}. Więcej informacji: {e}"
 					)
 		except discord.Forbidden:
 			logiKonsoli.warning(
@@ -78,7 +78,7 @@ def ustaw(bot: discord.Client) -> None:
 				f"Wystąpił błąd przy próbie odczytu logów audytu na serwerze {guild.name} o ID {guild.id}. Więcej informacji: {e}"
 			)
 
-		if not dostarczoneWiadomości:
+		if not dostarczono:
 			kanał = guild.system_channel or next((kanał for kanał in guild.text_channels if kanał.permissions_for(guild.me).send_messages), None)
 			if kanał:
 				try:
@@ -98,5 +98,9 @@ def ustaw(bot: discord.Client) -> None:
 					)
 				except discord.DiscordException as e:
 					logiKonsoli.exception(
-						f"Nie można wysłać wiadomości na serwer {guild.name} o ID {guild.id}. Więcej informacji: {e}"
+						f"Nie można wysłać wiadomości z instrukcjami na serwer {guild.name} o ID {guild.id}. Więcej informacji: {e}"
 					)
+			else:
+				logiKonsoli.warning(
+					f"Nie znaleziono kanału tekstowego na serwerze {guild.name} o ID {guild.id}. Wiadomość z instrukcjami nie została dostarczona."
+				)

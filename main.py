@@ -48,7 +48,7 @@ if hasattr(signal, "SIGBREAK"):
 
 def włączBota():
 	"""
-	Uruchamia bota z tokenem znajdującym się w zmiennej środowiskowej lub pliku konfiguracyjnym.
+	Uruchamia bota z tokenem znajdującym się w zmiennej środowiskowej o nazwie `ZASTEPSTWA` lub pliku konfiguracyjnym.
 	"""
 
 	try:

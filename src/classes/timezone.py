@@ -13,9 +13,7 @@
 # Standardowe biblioteki
 from datetime import datetime
 import logging
-
-# Zewnętrzne biblioteki
-import pytz
+from zoneinfo import ZoneInfo
 
 class Timezone(logging.Formatter):
 	"""
@@ -23,7 +21,7 @@ class Timezone(logging.Formatter):
 	"""
 
 	def formatTime(self, record, datefmt=None):
-		daneCzasu = datetime.fromtimestamp(record.created, pytz.timezone("Europe/Warsaw"))
+		daneCzasu = datetime.fromtimestamp(record.created, ZoneInfo("Europe/Warsaw"))
 		if datefmt:
 			return daneCzasu.strftime(datefmt)
 		return daneCzasu.strftime("%d-%m-%Y %H:%M:%S")

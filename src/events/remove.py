@@ -65,7 +65,7 @@ def ustaw(bot: discord.Client) -> None:
 				)
 
 			snapshot = copy.deepcopy(konfiguracja)
-		await zapiszKonfiguracje(snapshot)
+			await zapiszKonfiguracje(snapshot)
 
 		for rozszerzenie in (".json", ".json.old", ".json.tmp", ".json.bad"):
 			ścieżkaZasobów = folderDanych / f"{identyfikatorSerwera}{rozszerzenie}"

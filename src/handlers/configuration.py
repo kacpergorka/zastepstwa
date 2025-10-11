@@ -66,7 +66,7 @@ def wczytajKonfiguracje(path: Path = ścieżkaKonfiguracji) -> dict[str, Any]:
 		return wynik
 
 	domyślne = {
-		"wersja": "2.3.0.1-stable",
+		"wersja": "2.3.1.0-stable",
 		"token": "",
 		"koniec-roku-szkolnego": "2026-06-26",
 		"serwery": {},

@@ -12,6 +12,8 @@
 
 # Standardowe biblioteki
 import contextlib
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 # Zewnętrzne biblioteki
 import discord
@@ -22,10 +24,6 @@ from src.handlers.configuration import konfiguracja
 from src.handlers.logging import (
 	logiKonsoli,
 	logujPolecenia
-)
-from src.helpers.helpers import (
-	pobierzCzasDziałania,
-	pobierzLiczbęSerwerów
 )
 
 def ustaw(bot: discord.Client) -> None:
@@ -68,20 +66,25 @@ def ustaw(bot: discord.Client) -> None:
 				value="[Kacper Górka](https://kacpergorka.com/)"
 			)
 
-			if pobierzLiczbęSerwerów(bot) == 1:
+			if len(bot.guilds) == 1:
 				embed.add_field(
 					name="Liczba serwerów:",
-					value=(f"Bot znajduje się na **{pobierzLiczbęSerwerów(bot)}** serwerze.")
+					value=(f"Bot znajduje się na **{len(bot.guilds)}** serwerze.")
 				)
 			else:
 				embed.add_field(
 					name="Liczba serwerów:",
-					value=(f"Bot znajduje się na **{pobierzLiczbęSerwerów(bot)}** serwerach.")
+					value=(f"Bot znajduje się na **{len(bot.guilds)}** serwerach.")
 				)
+
+			czasDziałania = datetime.now(ZoneInfo("Europe/Warsaw")) - bot.czas
+			dni, reszta = divmod(czasDziałania.total_seconds(), 86400)
+			godziny, reszta = divmod(reszta, 3600)
+			minuty, sekundy = divmod(reszta, 60)
 
 			embed.add_field(
 				name="Bot pracuje bez przerwy przez:",
-				value=pobierzCzasDziałania(bot)
+				value=f"**{int(dni)}** dni, **{int(godziny)}** godz., **{int(minuty)}** min. i **{int(sekundy)}** sek."
 			)
 			embed.set_footer(text=Constants.DŁUŻSZA_STOPKA)
 			await interaction.response.send_message(embed=embed)
@@ -92,7 +95,13 @@ def ustaw(bot: discord.Client) -> None:
 				f"Wystąpił błąd podczas wywołania polecenia „/informacje”. Więcej informacji: {e}"
 			)
 			with contextlib.suppress(Exception):
-				await interaction.followup.send(
-					"Wystąpił błąd. Spróbuj ponownie lub skontaktuj się z administratorem bota.",
-					ephemeral=True
-				)
+					if not interaction.response.is_done():
+						await interaction.response.send_message(
+							"Wystąpił błąd. Spróbuj ponownie lub skontaktuj się z administratorem bota.",
+							ephemeral=True
+						)
+					else:
+						await interaction.followup.send(
+							"Wystąpił błąd. Spróbuj ponownie lub skontaktuj się z administratorem bota.",
+							ephemeral=True
+						)
