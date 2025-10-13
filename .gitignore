@@ -1,6 +1,6 @@
 **/__pycache__/
 */logs/
-*/resources/
+*/data/
 *.DS_Store
 *.json
 *.log
