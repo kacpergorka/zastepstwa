@@ -85,6 +85,7 @@ def wyodrębnijDane(
 		tekst = tekst.replace("\xa0", " ")
 		tekst = re.sub(r"[ \t]*\n[ \t]*", "\n", tekst)
 		tekst = re.sub(r"[ \t]{2,}", " ", tekst)
+		tekst = re.sub(r"\n\n", "\n", tekst)
 		tekst = re.sub(r"\n{3,}", "\n\n", tekst)
 
 		return tekst.strip("\n ")
@@ -265,32 +266,34 @@ def wyodrębnijDane(
 		informacjeDodatkowe = ""
 		wiersze = zawartośćStrony.find_all("tr")
 		komórkaST0 = None
+		komórkaST1 = None
 
 		for wiersz in wiersze:
 			for komórka in wiersz.find_all("td"):
 
 				if sprawdźKlasyKomórki(komórka, {"st0"}):
-					komórkaST0 = komórka
-					break
+					tymczasowy = wyczyśćTekst(komórka).strip()
+
+					if tymczasowy and tymczasowy != "&nbsp;":
+						komórkaST0 = komórka
+						break
 
 			if komórkaST0:
 				break
 
 		if komórkaST0:
-			tekstST0 = komórkaST0.get_text(separator="\n", strip=True)
+			link = komórkaST0.find("a")
+
+			if link and link.get("href"):
+				tekstLinku = wyczyśćTekst(link)
+				urlLinku = link.get("href")
+				link.replace_with(NavigableString(f"[{tekstLinku}]({urlLinku})"))
+
+			tekstST0 = wyczyśćTekst(komórkaST0)
 			tekstST0 = re.sub(r"[ \t]+", " ", tekstST0)
-			tekstST0 = re.sub(r"\n{3,}", "\n\n", tekstST0)
+			tekstST0 = re.sub(r"\n+\[", " [", tekstST0)
 
-			if tekstST0:
-				link = komórkaST0.find("a")
-
-				if link and link.get("href"):
-					tekstLinku = wyczyśćTekst(link)
-					urlLinku = link.get("href")
-					bezTekstuST0 = tekstST0.replace(tekstLinku, "").strip()
-					informacjeDodatkowe = f"{bezTekstuST0}\n[{tekstLinku}]({urlLinku})".strip()
-				else:
-					informacjeDodatkowe = tekstST0
+			informacjeDodatkowe = tekstST0
 
 		aktualnyNauczyciel = None
 		zgrupowane = defaultdict(list)
@@ -355,18 +358,32 @@ def wyodrębnijDane(
 		wpisyZastępstw.sort(key=lambda x: 0 if "Zastępstwa z nieprzypisanymi klasami!" in x[0] else 1)
 
 		if not informacjeDodatkowe and not sprawdźZastępstwa(wiersze):
-			treściST1 = []
-
 			for wiersz in wiersze:
 				for komórka in wiersz.find_all("td"):
 
 					if sprawdźKlasyKomórki(komórka, {"st1"}):
-						tekst = wyczyśćTekst(komórka)
+						tymczasowy = wyczyśćTekst(komórka).strip()
 
-						if tekst and tekst != "&nbsp;":
-							treściST1.append(tekst)
+						if tymczasowy and tymczasowy != "&nbsp;":
+							komórkaST1 = komórka
+							break
 
-			informacjeDodatkowe = "\n".join(treściST1).strip()
+				if komórkaST1:
+					break
+
+			if komórkaST1:
+				link = komórkaST1.find("a")
+
+				if link and link.get("href"):
+					tekstLinku = wyczyśćTekst(link)
+					urlLinku = link.get("href")
+					link.replace_with(NavigableString(f"[{tekstLinku}]({urlLinku})"))
+
+				tekstST1 = wyczyśćTekst(komórkaST1)
+				tekstST1 = re.sub(r"[ \t]+", " ", tekstST1)
+				tekstST1 = re.sub(r"\n+\[", " [", tekstST1)
+
+				informacjeDodatkowe = tekstST1
 
 		return informacjeDodatkowe, wpisyZastępstw
 	except Exception as e:

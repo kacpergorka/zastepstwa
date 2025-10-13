@@ -49,16 +49,16 @@ def ustaw(bot: discord.Client) -> None:
 
 		try:
 			embed = discord.Embed(
-				title="**Informacje dotyczące bota**",
+				title="**Informacje dotyczące instancji bota**",
 				description="Otwartoźródłowe oprogramowanie informujące o aktualizacjach zastępstw. W celu skontaktowania się z jednym z administratorów bota, naciśnij jednego z poniżej widniejących. Nastąpi przekierowanie na zewnętrzną stronę internetową.",
 				color=Constants.KOLOR
 			)
 			embed.add_field(
-				name="Wersja bota:",
-				value=konfiguracja.get("wersja", "Brak danych")
+				name="Oprogramowanie:",
+				value=(f"[{konfiguracja.get('wersja', 'Brak danych')}](https://github.com/kacpergorka/zastepstwa/releases)")
 			)
 			embed.add_field(
-				name="Repozytorium GitHuba:",
+				name="Repozytorium GitHub:",
 				value=("[kacpergorka/zastepstwa](https://github.com/kacpergorka/zastepstwa)")
 			)
 			embed.add_field(
