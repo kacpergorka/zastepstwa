@@ -112,7 +112,7 @@ def wyodrębnijDane(
 
 		return any(klasa in nazwy for klasa in klasy)
 
-	def sprawdźZastępstwa(wiersze: list[Tag]) -> bool:
+	def sprawdźIstnienieZastępstw(wiersze: list[Tag]) -> bool:
 		"""
 		Sprawdza, czy w tabeli HTML istnieje przynajmniej jeden wiersz z realnym zastępstwem.
 
@@ -259,12 +259,11 @@ def wyodrębnijDane(
 		)
 		return "", []
 
-	if not wybraniNauczyciele:
-		wybraniNauczyciele = []
-
 	try:
 		informacjeDodatkowe = ""
 		wiersze = zawartośćStrony.find_all("tr")
+		zgrupowane = defaultdict(list)
+		aktualnyNauczyciel = None
 		komórkaST0 = None
 		komórkaST1 = None
 
@@ -294,9 +293,6 @@ def wyodrębnijDane(
 			tekstST0 = re.sub(r"\n+\[", " [", tekstST0)
 
 			informacjeDodatkowe = tekstST0
-
-		aktualnyNauczyciel = None
-		zgrupowane = defaultdict(list)
 
 		for wiersz in wiersze:
 			komórki = wiersz.find_all("td")
@@ -357,7 +353,7 @@ def wyodrębnijDane(
 		wpisyZastępstw = [(nauczyciel, zgrupowane[nauczyciel]) for nauczyciel in zgrupowane if zgrupowane[nauczyciel]]
 		wpisyZastępstw.sort(key=lambda x: 0 if "Zastępstwa z nieprzypisanymi klasami!" in x[0] else 1)
 
-		if not informacjeDodatkowe and not sprawdźZastępstwa(wiersze):
+		if not informacjeDodatkowe and not sprawdźIstnienieZastępstw(wiersze):
 			for wiersz in wiersze:
 				for komórka in wiersz.find_all("td"):
 
