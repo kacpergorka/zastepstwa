@@ -12,8 +12,6 @@
 
 # Standardowe biblioteki
 import asyncio
-from datetime import datetime
-from zoneinfo import ZoneInfo
 
 # Zewnętrzne biblioteki
 import discord
@@ -133,25 +131,23 @@ async def sprawdźSerwery(
 
 		if sumaKontrolnaAktualnychInformacjiDodatkowych != sumaKontrolnaPoprzednichInformacjiDodatkowych or sumaKontrolnaAktualnychWpisówZastępstw != sumaKontrolnaPoprzednichWpisówZastępstw:
 			if sumaKontrolnaAktualnychWpisówZastępstw == sumaKontrolnaPoprzednichWpisówZastępstw:
-				logiKonsoli.info(
+				logiKonsoli.debug(
 					f"Treść informacji dodatkowych uległa zmianie dla serwera o ID {identyfikatorSerwera}. Zostaną wysłane zaktualizowane informacje."
 				)
 			else:
-				logiKonsoli.info(
+				logiKonsoli.debug(
 					f"Treść zastępstw uległa zmianie dla serwera o ID {identyfikatorSerwera}. Zostaną wysłane zaktualizowane zastępstwa."
 				)
 
 			try:
-				aktualnyCzas = datetime.now(ZoneInfo("Europe/Warsaw")).strftime("%d-%m-%Y %H:%M:%S")
-
 				if sumaKontrolnaAktualnychInformacjiDodatkowych != sumaKontrolnaPoprzednichInformacjiDodatkowych and sumaKontrolnaAktualnychWpisówZastępstw == sumaKontrolnaPoprzednichWpisówZastępstw:
-					await wyślijAktualizacje(kanał, identyfikatorSerwera, informacjeDodatkowe, None, aktualnyCzas)
+					await wyślijAktualizacje(kanał, identyfikatorSerwera, informacjeDodatkowe, None)
 
 				elif sumaKontrolnaAktualnychInformacjiDodatkowych == sumaKontrolnaPoprzednichInformacjiDodatkowych and sumaKontrolnaAktualnychWpisówZastępstw != sumaKontrolnaPoprzednichWpisówZastępstw:
-					await wyślijAktualizacje(kanał, identyfikatorSerwera, informacjeDodatkowe, aktualneWpisyZastępstw, aktualnyCzas)
+					await wyślijAktualizacje(kanał, identyfikatorSerwera, informacjeDodatkowe, aktualneWpisyZastępstw)
 
 				else:
-					await wyślijAktualizacje(kanał, identyfikatorSerwera, informacjeDodatkowe, aktualneWpisyZastępstw, aktualnyCzas)
+					await wyślijAktualizacje(kanał, identyfikatorSerwera, informacjeDodatkowe, aktualneWpisyZastępstw)
 
 				poprzedniLicznik = int(poprzednieDane.get("licznik-zastepstw", 0))
 

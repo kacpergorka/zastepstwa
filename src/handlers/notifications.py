@@ -29,8 +29,7 @@ async def wyślijAktualizacje(
 	kanał: discord.TextChannel,
 	identyfikatorSerwera: int,
 	informacjeDodatkowe: str,
-	aktualneWpisyZastępstw: list[tuple[str, list[str]]],
-	aktualnyCzas: str
+	aktualneWpisyZastępstw: list[tuple[str, list[str]]]
 ) -> None:
 	"""
 	Wysyła aktualizacje zastępstw do konkretnego kanału tekstowego Discord.
@@ -40,14 +39,13 @@ async def wyślijAktualizacje(
 		identyfikatorSerwera (int): ID serwera Discord.
 		informacjeDodatkowe (str): Tekst informacji dodatkowych nad zastępstwami.
 		aktualneWpisyZastępstw (list[tuple[str, list[str]]]): Lista zastępstw.
-		aktualnyCzas (str): Aktualny czas, używany w stopce wiadomości.
 	"""
 
 	opisTylkoDlaInformacjiDodatkowych = (
 		"**Informacje dodatkowe zastępstw:**"
 		f"\n{informacjeDodatkowe}"
 		"\n\n**Informacja o tej wiadomości:**"
-		"\nTa wiadomość zawiera informacje dodatkowe umieszczone nad zastępstwami. Nie znaleziono dla Ciebie żadnych zastępstw pasujących do Twoich filtrów."
+		"\nTa wiadomość zawiera informacje dodatkowe umieszczone nad zastępstwami. Nie znaleziono dla Ciebie nowych zastępstw pasujących do Twoich filtrów."
 	)
 	opisDlaInformacjiDodatkowych = (
 		"**Informacje dodatkowe zastępstw:**"
@@ -55,17 +53,18 @@ async def wyślijAktualizacje(
 		"\n\n**Informacja o tej wiadomości:**"
 		"\nTa wiadomość zawiera informacje dodatkowe umieszczone nad zastępstwami. Wszystkie zastępstwa znajdują się pod tą wiadomością."
 	)
-	treśćStopkiInformacjiDodatkowych = f"Czas aktualizacji: {aktualnyCzas}\n{Constants.KRÓTSZA_STOPKA}"
 
 	try:
 		ostatniaWiadomość = None
+		tytuł = ""
+
 		if informacjeDodatkowe and not aktualneWpisyZastępstw:
 			embed = discord.Embed(
 				title="**Zastępstwa zostały zaktualizowane!**",
 				description=opisTylkoDlaInformacjiDodatkowych,
 				color=Constants.KOLOR
 			)
-			embed.set_footer(text=treśćStopkiInformacjiDodatkowych)
+			embed.set_footer(text=Constants.KRÓTSZA_STOPKA)
 			await ograniczWysyłanie(kanał, embed=embed)
 
 		elif (informacjeDodatkowe and aktualneWpisyZastępstw) or (aktualneWpisyZastępstw):
@@ -86,10 +85,9 @@ async def wyślijAktualizacje(
 				description=opisDlaInformacjiDodatkowych,
 				color=Constants.KOLOR
 			)
-			embed.set_footer(text=treśćStopkiInformacjiDodatkowych)
+			embed.set_footer(text=Constants.KRÓTSZA_STOPKA)
 			await ograniczWysyłanie(kanał, embed=embed)
 
-			tytuł = ""
 			for tytuł, wpisyZastępstw in aktualneWpisyZastępstw:
 				if "Zastępstwa z nieprzypisanymi klasami!" in tytuł:
 					tekstZastępstw = (
