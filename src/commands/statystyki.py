@@ -164,13 +164,13 @@ def ustaw(bot: discord.Client) -> None:
 				f"Wystąpił błąd podczas wywołania polecenia „/statystyki”. Więcej informacji: {e}"
 			)
 			with contextlib.suppress(Exception):
-					if not interaction.response.is_done():
-						await interaction.response.send_message(
-							"Wystąpił błąd. Spróbuj ponownie lub skontaktuj się z administratorem bota.",
-							ephemeral=True
-						)
-					else:
-						await interaction.followup.send(
-							"Wystąpił błąd. Spróbuj ponownie lub skontaktuj się z administratorem bota.",
-							ephemeral=True
-						)
+				if not interaction.response.is_done():
+					await interaction.response.send_message(
+						"Wystąpił błąd. Spróbuj ponownie lub skontaktuj się z administratorem bota.",
+						ephemeral=True
+					)
+				else:
+					await interaction.followup.send(
+						"Wystąpił błąd. Spróbuj ponownie lub skontaktuj się z administratorem bota.",
+						ephemeral=True
+					)
