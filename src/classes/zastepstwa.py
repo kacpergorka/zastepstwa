@@ -127,14 +127,14 @@ class Zastępstwa(discord.Client):
 			if not getattr(self, "aktualizacje", None) or self.aktualizacje.done():
 				self.aktualizacje = asyncio.create_task(sprawdźAktualizacje(self))
 			else:
-				logiKonsoli.info(
+				logiKonsoli.warning(
 					"Zadanie sprawdzające aktualizacje zastępstw jest już uruchomione. Próba ponownego jego uruchomienia została zatrzymana."
 				)
 
 			if not getattr(self, "koniecRoku", None) or self.koniecRoku.done():
 				self.koniecRoku = asyncio.create_task(sprawdźKoniecRoku(self))
 			else:
-				logiKonsoli.info(
+				logiKonsoli.warning(
 					"Zadanie sprawdzające zakończenie roku szkolnego jest już uruchomione. Próba ponownego jego uruchomienia została zatrzymana."
 				)
 
