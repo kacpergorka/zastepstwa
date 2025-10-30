@@ -1,16 +1,16 @@
-# Aktualizacje zastępstw wysyłane na platformie Discord
+# Aktualizacje zastępstw dostarczane na platformę Discord
 [![](https://img.shields.io/badge/Zastępstwa%20Development-Dołącz%20do%20serwera-5865F2?logo=discord&logoColor=white)](https://discord.gg/f53qc2yZW7) [![](https://img.shields.io/badge/Zastępstwa%239138-Dodaj%20bota-5865F2?logo=discord&logoColor=white)](https://discord.com/oauth2/authorize?client_id=1278769348822962196&permissions=8&integration_type=0&scope=bot+applications.commands)
 
-Kod bota przystosowany jest do zastępstw [Zespołu Szkół Elektronicznych w Bydgoszczy](https://zastepstwa.zse.bydgoszcz.pl/) oraz [VII Liceum Ogólnokształcącego w Bydgoszczy](https://www.7lo.bydgoszcz.pl/zastep/zastep.html). Jesteś uczniem tych szkół? [Dodaj bota](https://discord.com/oauth2/authorize?client_id=1278769348822962196&permissions=8&integration_type=0&scope=bot+applications.commands), a następnie ciesz się z nieomijających Ciebie zastępstw. Wszystkie ważne informacje znajdziesz w wiadomości prywatnej wysłanej przez bota.
+Instancja bota udostępniona przez Właściciela posiada wsparcie dla [Zespołu Szkół Elektronicznych w Bydgoszczy](https://zastepstwa.zse.bydgoszcz.pl/) oraz [VII Liceum Ogólnokształcącego w Bydgoszczy](https://www.7lo.bydgoszcz.pl/zastep/zastep.html). Jesteś uczniem tych szkół? [Dodaj bota](https://discord.com/oauth2/authorize?client_id=1278769348822962196&permissions=8&integration_type=0&scope=bot+applications.commands), a następnie ciesz się z nieomijających Ciebie zastępstw. Wszystkie ważne informacje znajdziesz w prywatnej korespondencji z botem.
+
+Jeżeli jesteś uczniem innej szkoły, która tak samo, jak powyżej wymienione korzysta z usługi [Zastępstwa Optivum firmy VULCAN](https://duckduckgo.com/?t=h_&q=Zast%C4%99pstwa+Optivum+firmy+VULCAN&ia=web) i chciałbyś, aby twoja placówka dostała wsparcie przez oprogramowanie, [skontaktuj się ze mną](mailto:kontakt@kacpergorka.com), a w miarę możliwości wdrożę Twoją szkołę do procesu konfiguracji.
 
 # Informacje techniczne
-Bot na platformie Discord udostępnia aktualizacje zastępstw, które pobiera ze strony internetowej korzystającej z usługi [Zastępstwa Optivum firmy VULCAN](https://duckduckgo.com/?t=h_&q=Zast%C4%99pstwa+Optivum+firmy+VULCAN&ia=web).
+Parser wykorzystywany przez oprogramowanie przystosowany jest do konfiguracji i formatu zastępstw [Zespołu Szkół Elektronicznych w Bydgoszczy](https://zastepstwa.zse.bydgoszcz.pl/) oraz [VII Liceum Ogólnokształcącego w Bydgoszczy](https://www.7lo.bydgoszcz.pl/zastep/zastep.html). Szkoły za pomocą oprogramowania usługi [Zastępstwa Optivum firmy VULCAN](https://duckduckgo.com/?t=h_&q=Zast%C4%99pstwa+Optivum+firmy+VULCAN&ia=web) są w stanie zmienić konfigurację i formatowanie zastępstw, co może powodować błędy w poprawnym funkcjonowaniu bota, dlatego przed dodaniem wsparcia dla danej placówki konieczne jest przejrzenie kodu źródłowego strony z zastępstwami. Oprogramowanie na ten moment wspiera już wiele możliwych przypadków, lecz możliwe jest pojawienie się wyjątków.
 
-W przypadku wystąpienia jakiegokolwiek błędu z zakresu poprawnego funkcjonowania bota lub prawidłowego wysyłania zastępstw, utwórz issue z dokładnym opisem błędu, a w miarę możliwości postaram się odpowiednio szybko go naprawić. Aby skontaktować się z administratorami bota, użyj polecenia `/informacje` i postępuj zgodnie z instrukcjami.
+W przypadku wystąpienia jakiegokolwiek błędu z zakresu poprawnego funkcjonowania bota lub prawidłowego wysyłania zastępstw utwórz issue z dokładnym opisem błędu, a w miarę możliwości odpowiednio szybko zostanie on usunięty. Aby skontaktować się z administratorami bota, użyj polecenia `/informacje` i postępuj zgodnie z instrukcjami.
 
-Jeżeli jesteś uczniem innej szkoły, która tak samo, jak [Zespół Szkół Elektronicznych w Bydgoszczy](https://zse.bydgoszcz.pl/) lub [VII Liceum Ogólnokształcące w Bydgoszczy](https://www.7lo.bydgoszcz.pl) korzysta z usługi [Zastępstwa Optivum firmy VULCAN](https://duckduckgo.com/?t=h_&q=Zast%C4%99pstwa+Optivum+firmy+VULCAN&ia=web) i chciałbyś, aby twoja szkoła dostała wsparcie przez bota, skontaktuj się ze mną, a w miarę możliwości postaram się wdrożyć Twoją szkołę do procesu konfiguracji.
-
-# Największe atrybuty bota
+# Najprzydatniejsze funkcje bota
 ### Wybór kanału do wysyłania zastępstw
 Bot umożliwia wybranie interesującej Ciebie szkoły oraz dedykowanego kanału tekstowego, na który będą wysyłane zastępstwa, przy pomocy polecenia `/skonfiguruj`. Dzięki temu wszystkie istotne informacje trafią do wybranej grupy użytkowników.
 
@@ -32,7 +32,7 @@ Za pomocą polecenia `/statystyki` jesteś w stanie zobaczyć jaką ilość zast
 ![](https://github.com/user-attachments/assets/1cb6ed7a-063d-4e93-9b70-157496ffb34c)
 
 ### Czytelny i przejrzysty interfejs
-Dzięki wykorzystaniu nowoczesnych elementów interfejsu, udostępnionych przez Discorda, bot oferuje intuicyjny sposób konfiguracji oraz przejrzyście i czytelnie sformatowane zastępstwa.
+Dzięki wykorzystaniu nowoczesnych elementów interfejsu, udostępnionych przez platformę Discord, bot oferuje intuicyjny sposób konfiguracji oraz przejrzyście i czytelnie sformatowane zastępstwa.
 
 ![](https://github.com/user-attachments/assets/a4248095-d4c9-4ebc-9463-13355aef1caa)
 
