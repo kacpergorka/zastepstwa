@@ -4,7 +4,7 @@
 
 Korzystając z Bota, Użytkownik („Użytkownik”) akceptuje postanowienia niniejszej Polityki. W przypadku braku zgody Użytkownik powinien natychmiast zaprzestać korzystania z Bota.
 
-Administratorem danych osobowych przetwarzanych przez Bota jest [Kacper Górka](kontakt@kacpergorka.com).  
+Administratorem danych osobowych przetwarzanych przez Bota jest [Kacper Górka](mailto:kontakt@kacpergorka.com).  
 Polityka dotyczy danych przetwarzanych przez hostowaną instancję Bota. Przetwarzanie danych przez platformę Discord odbywa się na zasadach określonych przez [Discorda](https://discord.com) i jego [politykę prywatności](https://discord.com/privacy).
 
 ## §1. Jakie dane są gromadzone
